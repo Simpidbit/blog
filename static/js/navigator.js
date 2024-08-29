@@ -1,13 +1,13 @@
-// 请求navigator JSON数据，并渲染到window.navigatorContainer备用
+// 请求navigator JSON数据，并渲染到window.navigator_temp_container备用
 function render_navigator_from_JSON__interface_navigator() {
     let xhr = new XMLHttpRequest();
     xhr.open("GET", "/data/directory", true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             raw = xhr.responseText;
-            window.directoryData = JSON.parse(raw);
-            window.navigatorContainer = NEW("NAV", { "class": "content-nav" });
-            buildDirectoryToCursor(window.navigatorContainer, window.directoryData, "/");
+            let directory_json = JSON.parse(raw);
+            window.navigator_temp_container = NEW("NAV", { "class": "content-nav" });
+            buildDirectoryToCursor(window.navigator_temp_container, directory_json, "/");
         }
     }
     xhr.send();
@@ -82,11 +82,11 @@ function buildDirectoryToCursor(cursor, cursor_data, path) {
 // 由 / 按钮的onclick属性调用
 // 需要通过async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0)调用
 function goto_main_index__callback_navigator() {
-    window.simpidTitleData = null;
+    window.html_title_digest = null;
     ID("md-content").innerHTML = "";
     let markdown = ID("main-area");
     markdown.innerHTML = "";
-    markdown.appendChild(window.navigatorContainer);
+    markdown.appendChild(window.navigator_temp_container);
     history.replaceState(null, null, "/root");
 
     markdown.scrollTo(0, 0);
@@ -125,7 +125,7 @@ function moveNavigatorRoot(node, navigator) {
 // 前往上层目录
 // 由 < 按钮的onclick属性调用
 function goto_last_content__callback_navigator() {
-    window.simpidTitleData = null;
+    window.html_title_digest = null;
     ID("md-content").innerHTML = "";
 
     // 获取地址栏内容并判断上级目录是谁
@@ -142,13 +142,13 @@ function goto_last_content__callback_navigator() {
     history.replaceState(null, null, "/root");
 
     // 按照上级目录的位置展开
-    let anchorElement = unfoldNavigator(window.navigatorContainer, paths);
+    let anchorElement = unfoldNavigator(window.navigator_temp_container, paths);
     console.log(anchorElement);
 
     // 将navigator写入主界面（id=markdown）
     let markdown = ID("main-area");
     markdown.innerHTML = "";
-    markdown.appendChild(window.navigatorContainer);
+    markdown.appendChild(window.navigator_temp_container);
 
     // 移动到上级目录的位置
     if (paths.length <= 1) {

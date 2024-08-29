@@ -1,6 +1,6 @@
 // 扫描页面中的.mdtag-h
-// 并写入window.simpidTitleData
-// window.simpidTitleData: 
+// 并写入window.html_title_digest
+// window.html_title_digest: 
 //  [
 //      [第几级标题, 标题内容],
 //      [第几级标题, 标题内容],
@@ -8,10 +8,10 @@
 //      ....
 //  ]
 function scan_html_title__local_mdcontent() {
-    window.simpidTitleData = [];
+    window.html_title_digest = [];
     let titles = CLASS("mdtag-h");
     for (let k = 0; k < titles.length; k++) {
-        window.simpidTitleData.push([
+        window.html_title_digest.push([
             Number(titles[k].tagName.substr(1)),
             titles[k].innerHTML
         ]);
@@ -19,15 +19,15 @@ function scan_html_title__local_mdcontent() {
 }
 
 
-// 依据window.simpidTitleData中的数据
+// 依据window.html_title_digest中的数据
 // 构建md-content组件并写入左侧边栏
 function render_mdcontent_from_globaldata__interface_mdcontent() {
     scan_html_title__local_mdcontent();
-    console.log(window.simpidTitleData);
+    console.log(window.html_title_digest);
 
-    window.mdcontentTmp = [];
+    window.mdcontent_label_state = [];
     let md_content = ID("md-content");
-    let title_data = window.simpidTitleData;
+    let title_data = window.html_title_digest;
     for (let i = 0; i < title_data.length; i++) {
 
         let button = NEW("BUTTON", {
@@ -55,7 +55,7 @@ function render_mdcontent_from_globaldata__interface_mdcontent() {
 
         md_content.appendChild(div);
 
-        window.mdcontentTmp.push(["open"]);
+        window.mdcontent_label_state.push(["open"]);
     }
 }
 
@@ -84,7 +84,7 @@ function change_btn_status__callback_mdcontent(btn) {
     }
 }
 
-// window.mdcontentTmp: [ [status, ele...], [...],... ]
+// window.mdcontent_label_state : [ [status, ele...], [...],... ]
 
 // 展开/折叠md_content_label
 function fold_mdcontent_label__callback_mdcontent(md_content_label) {
@@ -92,15 +92,16 @@ function fold_mdcontent_label__callback_mdcontent(md_content_label) {
     let this_level = Number(md_content_label.getAttribute("data-level"));
     let this_id = Number(md_content_label.getAttribute("data-id"));
 
-    if (window.mdcontentTmp[this_id][0] == "closed") {              // to open
+    console.log(window.mdcontent_label_state.toString());
+    if (window.mdcontent_label_state[this_id][0] == "closed") {              // to open
         let cursor = md_content_label;
-        for (let i = 1; i < window.mdcontentTmp[this_id].length; i++) {
-            cursor.insertAdjacentElement("afterend", window.mdcontentTmp[this_id][i]);
+        for (let i = 1; i < window.mdcontent_label_state[this_id].length; i++) {
+            cursor.insertAdjacentElement("afterend", window.mdcontent_label_state[this_id][i]);
             cursor = cursor.nextElementSibling;
         }
-        window.mdcontentTmp[this_id] = window.mdcontentTmp[this_id].slice(0, 1);
-        window.mdcontentTmp[this_id][0] = "open"
-    } else if (window.mdcontentTmp[this_id][0] == "open") {         // to close
+        window.mdcontent_label_state[this_id] = window.mdcontent_label_state[this_id].slice(0, 1);
+        window.mdcontent_label_state[this_id][0] = "open"
+    } else if (window.mdcontent_label_state[this_id][0] == "open") {         // to close
         let cursor = md_content_label;
         let md_content = ID("md-content");
     
@@ -108,7 +109,7 @@ function fold_mdcontent_label__callback_mdcontent(md_content_label) {
         while (true) {
             if (!cursor) break;
             if (Number(cursor.getAttribute("data-level")) > this_level) {
-                window.mdcontentTmp[this_id].push(cursor);
+                window.mdcontent_label_state[this_id].push(cursor);
                 let next_tmp = cursor.nextElementSibling;
                 md_content.removeChild(cursor);
                 cursor = next_tmp;
@@ -116,6 +117,6 @@ function fold_mdcontent_label__callback_mdcontent(md_content_label) {
                 break;
             }
         }
-        window.mdcontentTmp[this_id][0] = "closed";
+        window.mdcontent_label_state[this_id][0] = "closed";
     }
 }

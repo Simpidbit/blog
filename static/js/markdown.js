@@ -16,8 +16,6 @@ function parse_markdown_to_html__interface_markdown(raw) {
     // 去除字符串开头和结尾的空格
     raw = raw.trim();
 
-    window.testraw = raw;
-
     // code
     raw = __markdown_code(raw);
 
