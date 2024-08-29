@@ -23,7 +23,7 @@ window.onload = function() {
     // 非阻塞式引入较大的script
     setTimeout(function() {
         let script = NEW("SCRIPT", {
-            "src": "/static/js/MathJax/es5/tex-mml-chtml.js",
+            "src": "/static/js/external_MathJax/es5/tex-mml-chtml.js",
             "onload": "async_try_until_ok__interface_wait(MathJax.typeset, 200);"
         });
         document.head.appendChild(script);
