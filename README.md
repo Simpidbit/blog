@@ -40,17 +40,152 @@
 
 `markdown.js`及`markdown`目录下的代码负责markdown语法的解析，`loader.js`负责将解析为html的md文件写入main-area并构建左侧的目录
 
+**接口**：
+
+- > `catch_plain_text_from_element__local_loader(element)`
+
+  输入：`element`参数，即捕捉哪个元素下的子纯文本节点
+
+  输出：将捕捉到的纯文本套上标签后写回element
+
+- > `update_markdown_to_main_area__interface_loader(path, firstTime = false)`
+
+  输入：
+
+  ​	`path`参数：请求的文章路径（不含root）;
+
+  ​	`firstTime`参数：是否是第一次打开网页;
+
+  ​	`CLASS("mdtag-mermaid")`：将这些节点渲染为mermaid图;
+
+  输出：
+
+  ​	要写入到main-area的文章路径写入地址栏;
+
+  ​	请求的文章写入`ID("main-area")`；
+
+  ​	`CLASS("mdtag-mermaid")`渲染为mermaid；
+
+  ​	
+
 
 
 #### mdcontent.js
 
 负责构建页面左侧的目录
 
+**接口**：
+
+- > `render_mdcontent_from_globaldata__interface_mdcontent()`
+
+  输入：
+
+  ​	`window.html_title_digest`数据，用于构建目录
+
+  ​	`ID("md-content")` 被写入的元素
+
+  输出：
+
+   	写入`window.mdcontent_label_state`当前各目录label的状态
+
+  ​	 写入`ID("md-content")`显示目录
+
+  
+
+**回调**：
+
+- > `goto_title_of_mdcontent__callback_mdcontent(a_tag)`
+
+  输入：
+
+  ​	`a_tag`参数：调用这个函数的超链接元素
+
+  ​	`CLASS("mdtag-h")`：从这里面找到是要跳转到哪个标题
+
+  输出：
+
+  ​	跳转到指定标题
+
+  ​	
+- > `change_btn_status__callback_mdcontent(btn)`
+
+  输入：
+
+  ​	`btn`参数：调用这个函数的按钮元素，获取此元素父节点的`data-status`属性作为输入
+  
+  输出：
+  
+  ​	更改元素父节点的`data-status`属性
+  
+  ​	
+  
+- > `fold_mdcontent_label__callback_mdcontent(md_content_label)`
+  
+  输入：
+  
+  ​	`md_content_label`参数：调用此函数的元素
+  
+  ​	已经构造好的`window.mdcontent_label_state`：从这里分析需要展开/折叠哪些元素
+  
+  输出：
+  
+  ​	更新`window.mdcontent_label_state`的状态
+  
+  ​	展开或折叠左侧标题目录栏的某部分
+  
+  
+
 
 
 #### navigator
 
 负责构建在main-area显示的主目录
+
+**接口：**
+
+- > `render_navigator_from_JSON__interface_navigator()`
+
+  输入：
+
+  ​	从服务器请求文件目录的JSON
+
+  输出：
+
+  ​	将构造好的navigator写入`window.navigator_temp_container`
+
+**回调：**
+
+- > `goto_main_index__callback_navigator()`
+
+  输入：
+
+  ​	`window.navigator_temp_container`中构造好的节点
+
+  输出：
+
+  ​	清空`ID("md-content")`
+
+  ​	将构造好的节点写入`ID("main-area")`，同时将地址栏路径改为`/root`
+
+- > `goto_last_content__callback_navigator()`
+
+  输入：
+
+  ​	地址栏中的路径，用来确定文章上级目录是哪个
+
+  ​	`window.navigator_temp_container`中构造好的节点
+
+  输出：
+
+  ​	将构造好的节点写入`ID("main-area")`
+
+  ​	自动让navigator跳转到上级目录的位置
+
+  ​	将`/root`写入地址栏路径
+
+  ​	
+
+  
 
 
 
@@ -69,6 +204,22 @@
 #### wait.js
 
 小模块，负责对异步操作进行一些封装
+
+**接口**：
+
+- > `async_try_until_ok__interface_wait(func, ms, args = null)`
+
+  输入：
+
+  ​	`func`函数，即要异步反复尝试执行的函数本体
+
+  ​	`ms`参数，两次尝试之间等待的毫秒数
+
+  ​	`args`参数，传给`func`的参数，如果为`null`则不给`func`传参
+
+  输出：
+
+  ​	`func`执行成功返回的返回值
 
 
 

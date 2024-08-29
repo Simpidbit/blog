@@ -12,12 +12,13 @@ function parse_partof_md_to_html__local_markdown(raw, reg, renderFunc) {
 
 
 // markdown渲染的主函数
-function parse_markdown_to_html__interface_markdown(raw) {
+function parse_markdown_to_html__local_markdown(raw) {
     // 去除字符串开头和结尾的空格
     raw = raw.trim();
 
-    // code
+    // code，必须放在前面，对code内的特殊符号进行保护
     raw = __markdown_code(raw);
+
 
     // 无序列表渲染
     raw = __markdown_ul_li(raw);
@@ -44,11 +45,18 @@ function parse_markdown_to_html__interface_markdown(raw) {
     // h1 ~ h5
     raw = __markdown_title(raw);
 
+    // --- <hr />
+    raw = parse_partof_md_to_html__local_markdown(raw, /\n\-\-\-/g, s => { return "<hr />" })
+
+
+    // **字体加粗**
+    raw = parse_partof_md_to_html__local_markdown(raw, /(?<!\*)\*\*[^]+?\*\*(?!\*)/g, s => { return `<b>${s.slice(2, s.length - 2)}</b>`; })
+
     // \n, must be the end
-    raw = parse_partof_md_to_html__local_markdown(raw, /\n\ *?\n/g, function(s) { return "<br />"; });
+    raw = parse_partof_md_to_html__local_markdown(raw, /\n\ *?\n/g, s => { return "<br />"; });
 
     // \t, must be the end
-    raw = parse_partof_md_to_html__local_markdown(raw, /\t/g, function(s) { return "&nbsp;".repeat(4); });
+    raw = parse_partof_md_to_html__local_markdown(raw, /\t/g, s => { return "&nbsp;".repeat(4); });
 
     // 连续多个空格, must be the end
     raw = parse_partof_md_to_html__local_markdown(raw, /\ \ +/g, s => {
@@ -56,6 +64,7 @@ function parse_markdown_to_html__interface_markdown(raw) {
         for (let i = s; i < s.length; i++) { ret += "&nbsp;"; }
         return ret;
     });
+
 
     // 还原受保护的特殊符号
     raw = __markdown_unescape_raw(raw);

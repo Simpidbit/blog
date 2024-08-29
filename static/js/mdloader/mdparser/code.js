@@ -4,12 +4,11 @@ function __markdown_code(raw) {
         let begin_index = s.search(/(?<=```\w*?\n)[^]*?```/g);
         let language = s.match(/(?<=```)\w*?(?=\n)/g)[0]; //`
         let content = s.slice(begin_index, s.length - 1 - 2);
+        s = __markdown_escape_HTML(s);
+        s = __markdown_escape_raw(s);
         if (language == "mermaid") {
             return "<pre class=\"mdtag-mermaid\" data-codetype=\"" + language + "\">" + content + "</pre>";
         } else  {
-            s = __markdown_escape_HTML(s);
-            s = __markdown_escape_raw(s);
-
             content = s.slice(begin_index, s.length - 1 - 2);
             return "<div class=\"mdtag-code-container\"><code class=\"mdtag-code\" data-codetype=\"" + language + "\">" + content + "</code></div>";
         }

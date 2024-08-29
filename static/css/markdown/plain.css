@@ -4,3 +4,9 @@ div.md-plain-text {
     font-size: var(--main-font-size);
     font-weight: 100;
 }
+
+b {
+    font-family: "enfont-bold", "cnfont-bold";
+    font-weight: 900;
+    font-size: var(--main-font-size);
+}

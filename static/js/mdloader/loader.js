@@ -36,7 +36,7 @@ function update_markdown_to_main_area__interface_loader(path, firstTime = false)
         if (xhr.readyState === 4 && xhr.status === 200) {
             raw = xhr.responseText;
             let markdown = ID("main-area");
-            markdown.innerHTML = parse_markdown_to_html__interface_markdown(raw);
+            markdown.innerHTML = parse_markdown_to_html__local_markdown(raw);
             render_all_elements_to_mermaid__interface_mermaid(CLASS("mdtag-mermaid"));
             history.replaceState(null, null, "/root" + path);
             if (firstTime)  async_try_until_ok__interface_wait(MathJax.typeset, 200);

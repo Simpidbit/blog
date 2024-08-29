@@ -7,7 +7,7 @@ function render_navigator_from_JSON__interface_navigator() {
             raw = xhr.responseText;
             let directory_json = JSON.parse(raw);
             window.navigator_temp_container = NEW("NAV", { "class": "content-nav" });
-            buildDirectoryToCursor(window.navigator_temp_container, directory_json, "/");
+            build_to_cursor_from_data__local_navigator(window.navigator_temp_container, directory_json, "/");
         }
     }
     xhr.send();
@@ -36,9 +36,7 @@ function create_ele_for_navigator__local_navigator(name, serious_name, unfoldabl
         let details = NEW("DETAILS");
         details.addEventListener("toggle", (event) => {
             if (details.open) {
-                console.log("打开", details);
             } else {
-                console.log("关闭", details);
             }
         });
 
@@ -57,7 +55,7 @@ function create_ele_for_navigator__local_navigator(name, serious_name, unfoldabl
 // 并写入cursor (此时cursor更像是作为一个容器)
 // 注意：cursor_data与cursor并无直接联系
 // cursor_data的"cursor"是由于此函数递归调用而得名的
-function buildDirectoryToCursor(cursor, cursor_data, path) {
+function build_to_cursor_from_data__local_navigator(cursor, cursor_data, path) {
     for (let key in cursor_data) {
         if (cursor_data[key][1] == 0) {         // file
             let tag = create_ele_for_navigator__local_navigator(
@@ -69,7 +67,7 @@ function buildDirectoryToCursor(cursor, cursor_data, path) {
                 cursor_data[key][0], key, 1, path
             );
             cursor.appendChild(tag);
-            buildDirectoryToCursor(
+            build_to_cursor_from_data__local_navigator(
                 tag.firstElementChild.firstElementChild.nextElementSibling,
                 cursor_data[key][2],
                 path + key + "/"
@@ -93,8 +91,8 @@ function goto_main_index__callback_navigator() {
 }
 
 // 从cursor元素，沿着patharr展开
-// 返回最后一个可以展开的元素(DETAILS)
-function unfoldNavigator(cursor, patharr) {
+// 返回最后一个可以展开的元素(DETAILS)，用于后续滚动定位
+function unfold_along_path__local_navigator(cursor, patharr) {
     for (let i = 0; i < patharr.length; i++) {
         let childs = cursor.children;
         for (let j = 0; j < childs.length; j++) {       // 搜索cursor的子节点
@@ -114,7 +112,7 @@ function unfoldNavigator(cursor, patharr) {
 
 // node是details下的summary
 // 将navigator移至对其此details
-function moveNavigatorRoot(node, navigator) {
+function move_navigator_to_node__local_navigator(node, navigator) {
     let details_rect = node.parentElement.getBoundingClientRect();
     let navigator_rect = navigator.getBoundingClientRect();
 
@@ -142,8 +140,7 @@ function goto_last_content__callback_navigator() {
     history.replaceState(null, null, "/root");
 
     // 按照上级目录的位置展开
-    let anchorElement = unfoldNavigator(window.navigator_temp_container, paths);
-    console.log(anchorElement);
+    let anchorElement = unfold_along_path__local_navigator(window.navigator_temp_container, paths);
 
     // 将navigator写入主界面（id=markdown）
     let markdown = ID("main-area");
@@ -154,6 +151,6 @@ function goto_last_content__callback_navigator() {
     if (paths.length <= 1) {
         markdown.scrollTo(0, 0);
     } else {
-        moveNavigatorRoot(anchorElement, markdown);
+        move_navigator_to_node__local_navigator(anchorElement, markdown);
     }
 }

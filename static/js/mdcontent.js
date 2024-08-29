@@ -23,7 +23,6 @@ function scan_html_title__local_mdcontent() {
 // 构建md-content组件并写入左侧边栏
 function render_mdcontent_from_globaldata__interface_mdcontent() {
     scan_html_title__local_mdcontent();
-    console.log(window.html_title_digest);
 
     window.mdcontent_label_state = [];
     let md_content = ID("md-content");
@@ -67,7 +66,6 @@ function goto_title_of_mdcontent__callback_mdcontent(a_tag) {
 
     let mainarea = ID("main-area");
     let targetrect = CLASS("mdtag-h")[div_id].getBoundingClientRect();
-    console.log(targetrect.y);
     mainarea.scrollTo(0, mainarea.scrollTop + targetrect.y);
 }
 
@@ -88,11 +86,9 @@ function change_btn_status__callback_mdcontent(btn) {
 
 // 展开/折叠md_content_label
 function fold_mdcontent_label__callback_mdcontent(md_content_label) {
-    console.log(md_content_label);
     let this_level = Number(md_content_label.getAttribute("data-level"));
     let this_id = Number(md_content_label.getAttribute("data-id"));
 
-    console.log(window.mdcontent_label_state.toString());
     if (window.mdcontent_label_state[this_id][0] == "closed") {              // to open
         let cursor = md_content_label;
         for (let i = 1; i < window.mdcontent_label_state[this_id].length; i++) {
