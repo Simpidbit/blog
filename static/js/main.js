@@ -10,7 +10,7 @@ window.onload = function() {
         case 1:
             if (pathque[0] == "root") {
                 render_navigator_from_JSON__interface_navigator();
-                async_try_until_ok__interface_wait(gotoMainContent, 0);
+                async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0);
             }
             break;
         default:

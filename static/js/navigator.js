@@ -80,8 +80,8 @@ function buildDirectoryToCursor(cursor, cursor_data, path) {
 
 // 前往根目录
 // 由 / 按钮的onclick属性调用
-// 需要通过async_try_until_ok__interface_wait(gotoMainContent, 0)调用
-function gotoMainContent() {
+// 需要通过async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0)调用
+function goto_main_index__callback_navigator() {
     window.simpidTitleData = null;
     ID("md-content").innerHTML = "";
     let markdown = ID("main-area");
@@ -124,7 +124,7 @@ function moveNavigatorRoot(node, navigator) {
 
 // 前往上层目录
 // 由 < 按钮的onclick属性调用
-function gotoLastContent() {
+function goto_last_content__callback_navigator() {
     window.simpidTitleData = null;
     ID("md-content").innerHTML = "";
 
