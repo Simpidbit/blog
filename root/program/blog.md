@@ -20,7 +20,7 @@
 
 |按钮类型| 按钮说明 | 回调函数 |
 |--------| -------- | -------- |
-|按钮|返回主目录按钮|`async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0);`|
+|按钮|返回主目录按钮|`async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0);aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`|
 |按钮|返回上层目录按钮|`goto_last_content__callback_navigator();`|
 |超链接|在目录中点击某个文章，就加载此文章|`update_markdown_to_main_area__interface_loader(...);`|
 |超链接| 左侧文章目录栏中的标题，点击时跳转到到文章对应的标题位置|`goto_title_of_mdcontent__callback_mdcontent(this);`|
@@ -209,7 +209,7 @@
 
 - > `async_try_until_ok__interface_wait(func, ms, args = null)`
 
-  输入> 你哈o
+  输入：
 
   ​	`func`函数，即要异步反复尝试执行的函数本体
 

@@ -6,7 +6,8 @@ div.mdtag-code-container {
     font-size: 17px;
 }
 
-code.mdtag-inline-code {
+.mdtag-inline-code {
+    display: inline;
     margin-left: 2px;
     margin-right: 2px;
     font-size: 17px;

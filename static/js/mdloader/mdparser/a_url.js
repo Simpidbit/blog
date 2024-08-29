@@ -75,7 +75,7 @@ function __markdown_naked_url(raw) {
     }
 
     for (let i = 0; i < pieces.length; i++) {
-        let res = pieces[i].match(/(?<=(\ |\n|^|\r))(\w+:\/\/)?((\w+\.)+\w+(:[0-9]+)?)(\/[^\/\ \n\r]+?)*\/?(?=(\ |\n|\r|$))/g);
+        let res = pieces[i].match(/(?<=(\ |\n|^|\r))(\w+:\/\/)((\w+\.)+\w+(:[0-9]+)?)(\/[^\/\ \n\r]+?)*\/?(?=(\ |\n|\r|$))/g);
         if (res == null) {
             continue;
         } else {
