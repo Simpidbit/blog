@@ -7,3 +7,13 @@
     font-family: "cnfont";
     src: url("/static/font/Deng.ttf") format("truetype");
 }
+
+@font-face {
+    font-family: "cnfont-bold";
+    src: url("/static/font/Dengb.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "cnfont-thin";
+    src: url("/static/font/Dengl.ttf") format("truetype");
+}
