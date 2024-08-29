@@ -1,0 +1,29 @@
+nav.content-nav {
+    font-family: "enfont", "cnfont";
+    font-size: 20px;
+}
+
+nav.content-nav li {
+    height: 30px;
+}
+
+nav.content-nav ul {
+    margin: 0;
+}
+
+nav.content-nav summary:hover {
+    text-decoration: underline;
+}
+
+nav.content-nav a {
+    text-decoration: none;
+    color: inherit;
+}
+
+nav.content-nav a:hover {
+    text-decoration: underline;
+}
+
+nav.content-nav a:visited {
+    color: red;
+}

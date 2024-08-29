@@ -1,0 +1,31 @@
+window.onload = function() {
+    // 通过地址栏地址，
+    // 判断是从根目录开始的还是从别的目录开始的
+    let pathque = get_path_queue__interface_pathque();
+    switch (pathque.length) {
+        case 0:     // 根目录
+            update_markdown_to_main_area__interface_loader("/index.md", true);
+            render_navigator_from_JSON__interface_navigator();
+            break;
+        case 1:
+            if (pathque[0] == "root") {
+                render_navigator_from_JSON__interface_navigator();
+                async_try_until_ok__interface_wait(gotoMainContent, 0);
+            }
+            break;
+        default:
+            pathque.shift();        // 弃去 "root"
+            update_markdown_to_main_area__interface_loader(get_pathname_from_path_queue__interface_pathque(pathque), true);
+            render_navigator_from_JSON__interface_navigator();
+    }
+
+
+    // 非阻塞式引入较大的script
+    setTimeout(function() {
+        let script = NEW("SCRIPT", {
+            "src": "/static/js/MathJax/es5/tex-mml-chtml.js",
+            "onload": "async_try_until_ok__interface_wait(MathJax.typeset, 200);"
+        });
+        document.head.appendChild(script);
+    }, 5);
+}

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "enfont";
+    src: url("/static/font/Monaco.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "cnfont";
+    src: url("/static/font/Deng.ttf") format("truetype");
+}

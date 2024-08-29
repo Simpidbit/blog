@@ -1,0 +1,41 @@
+#md-content {
+    font-size: 20px;
+    background-color: var(--main-color);
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    border-right: 1px dashed #000000;
+}
+
+.md-content-label {
+    white-space: nowrap;
+    height: 30px;
+}
+
+.md-content-label > a {
+    padding: 5px;
+}
+.md-content-label > a:hover {
+    text-decoration: underline;
+}
+
+.md-content-label[data-status="folded"] > a {
+    border-radius: 10px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+}
+
+.md-content-label[data-level="2"] {
+    padding-left: 30px;
+}
+.md-content-label[data-level="3"] {
+    padding-left: 60px;
+}
+.md-content-label[data-level="4"] {
+    padding-left: 90px;
+}
+.md-content-label[data-level="5"] {
+    padding-left: 120px;
+}

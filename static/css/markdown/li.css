@@ -1,0 +1,27 @@
+li.mdtag-li {
+    font-size: var(--main-font-size);
+}
+
+li.mdtag-li[data-level="0"] {
+    list-style-type: disc;
+}
+
+li.mdtag-li[data-level="1"] {
+    padding-left: 20px;
+    list-style-type: circle;
+}
+
+li.mdtag-li[data-level="2"] {
+    padding-left: 40px;
+    list-style-type: square;
+}
+
+li.mdtag-li[data-level="3"] {
+    padding-left: 60px;
+    list-style-type: "-   ";
+}
+
+li.mdtag-li[data-level="4"] {
+    padding-left: 80px;
+}
+
