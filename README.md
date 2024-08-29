@@ -28,6 +28,62 @@
 
 
 
+### 各模块及功能说明
+
+#### main.js
+
+主要定义`window.onload`回调函数，刚刚打开时处理页面，同时异步引入较大的MathJax模块
+
+
+
+#### mdloader
+
+`markdown.js`及`markdown`目录下的代码负责markdown语法的解析，`loader.js`负责将解析为html的md文件写入main-area并构建左侧的目录
+
+
+
+#### mdcontent.js
+
+负责构建页面左侧的目录
+
+
+
+#### navigator
+
+负责构建在main-area显示的主目录
+
+
+
+#### pathque.js
+
+小模块，负责处理URL中的路径
+
+
+
+#### static.js
+
+小模块，对原生JS进行一些封装
+
+
+
+#### wait.js
+
+小模块，负责对异步操作进行一些封装
+
+
+
+#### external_mermaid
+
+外部引用mermaid，负责渲染mermaid图
+
+
+
+#### external_MathJax
+
+外部引用MathJax，负责渲染laTeX公式
+
+
+
 ### 用到的全局变量(window.xxx)
 
 #### window.html_title_digest
