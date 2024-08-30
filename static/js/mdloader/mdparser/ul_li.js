@@ -1,6 +1,57 @@
+function __markdown_ul_li_tag_begin_or_end(tagstr) {
+    if (/\<\w+([^\<\>\/]+)?\>/g.test(tagstr)) {
+        return "begin";
+    } else if (/\<\/\w+([^\<\>\/]+)?\>/g.test(tagstr)) {
+        return "end";
+    } else if (/\<\w+([^\<\>]+)?\/\>/g.test(tagstr)) {
+        return "self";
+    } else {
+        console.warn(`@__markdown_ul_li_tag_begin_or_end(${tagstr}) Unknown tag type: ${tagstr}`);
+        return "unknown";
+    }
+}
+
+
+function __markdown_ul_li_single_li(ret, raw) {
+    console.log("分析: ", ret[0]);
+    let tag_reg = /\<\/?\w+([^\<\>]+)?\>/g;
+    let tag_ret = null;
+    tag_ret = tag_reg.exec(ret[0]);
+
+
+    while (tag_ret != null) {
+        console.log(tag_ret[0]);
+        tag_ret = tag_reg.exec(ret[0]);
+    }
+
+
+    return raw;
+}
+
+
+// 任务：把 - 后面能看成一个整体的节点的开始和结束之间的\n替换为\x1d
+function __markdown_ul_li_patch_entire(raw) {
+    // 首先给所有的html标签打上label
+
+    let ul_reg = /(?<=(^|\n))\ *?-\ +?[^]*?(?=($|\n))/g;
+    
+    let ret = null;
+    ret = ul_reg.exec(raw);
+    while (ret != null) {
+        // 这里处理匹配到的ul_li行
+        raw = __markdown_ul_li_single_li(ret, raw);
+        ret = ul_reg.exec(raw);
+    }
+
+    return raw;
+}
+
 // 负责渲染无序列表
 function __markdown_ul_li(raw) {
     let ret = "";
+
+    raw = __markdown_ul_li_patch_entire(raw);
+
     let sentences = raw.split("\n");
     let space_counter = [];
 
@@ -19,6 +70,7 @@ function __markdown_ul_li(raw) {
             }
         }
     }
+
     // 由外层向内层渲染
     // 找到最少space的，渲染后调高
     let level = 0;
@@ -53,6 +105,6 @@ function __markdown_ul_li(raw) {
             ret += '\n';
         }
     }
-    return ret;
+    return ret.replace('\x1d', '\n');
 }
 

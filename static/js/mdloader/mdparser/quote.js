@@ -17,7 +17,9 @@ function __markdown_quote(raw) {
     for (let i = 0; i < lines.length; i++) {
         let current_level = line_quote_levels[i];
         let last_level = line_quote_levels[i - 1];
-        if (line_quote_levels[i] != 0) {// 有有效quotemark
+       
+
+        if (current_level != 0) {// 有有效quotemark
             if (i == 0) {                   // 第一行就是有效quotemark，此时last_level = undefined
                 lines[0] = lines[0].replace(
                     /(?<=(\ |^))(>\ *)+\ /,
@@ -73,6 +75,8 @@ function __markdown_quote_mark_line_level(lines) {
     let lineparse = null;
     for (let i = 0; i < lines.length; i++) {
         lineparse = __markdown_quote_mark_line_parse(lines[i]);
+        if (/foldtree.js/.test(lines[i])) {
+        }
         if (lineparse[0]) {         // 前面有别的字符
             if (lastparse != null && lastparse[0] && lastparse[1] != 0) {         // 上一个前面也有别的字符
                 ret.push(0);
@@ -97,6 +101,8 @@ function __markdown_quote_mark_line_level(lines) {
 function __markdown_quote_mark_line_parse(line) {
     line = combine_space(line);
     let pieces = line.split(' ');
+    if (pieces[0] == '') pieces.shift();
+    if (pieces[pieces.length - 1] == '') pieces.pop();
 
     let is_begin = -1;
     let has_divided_into_quotemark = false;
