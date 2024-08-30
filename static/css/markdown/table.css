@@ -20,3 +20,7 @@ table th {
     background-color: #c6c6c6;
 }
 
+.mdtag-table-container {
+    width: 100%;
+    overflow: auto;
+}

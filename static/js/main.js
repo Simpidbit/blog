@@ -19,6 +19,8 @@ window.onload = function() {
             render_navigator_from_JSON__interface_navigator();
     }
 
+    register_event_listener__interface_event();
+
 
     // 非阻塞式引入较大的script
     setTimeout(function() {

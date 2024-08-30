@@ -68,7 +68,7 @@ function __markdown_ul_li_single_li(ret, raw) {
             }
             if (unend_tag_number == 0) break;
         }
-        // 之间的\n全部换成X
+        // 之间的\n全部换成\x1d
         for (let i = offset + last_tag_ret.index + last_tag_ret[0].length - 1;
                  i < tag_ret.index; i++) {
             if (raw[i] == '\n') {

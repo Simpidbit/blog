@@ -146,7 +146,7 @@ function __markdown_table(raw) {
             if (tarr[k].length >= 7
                 && tarr[k].slice(0, 6) == "\x01TABLE") {
                 if (Number(tarr[k].substr(6)) == i) {
-                    tarr[k] = "<table class=\"mdtag-table\">" + table_ele.getHTML() + "</table>";
+                    tarr[k] = "<div class=\"mdtag-table-container\"><table class=\"mdtag-table\">" + table_ele.getHTML() + "</table></div>";
                 }
             }
         }
