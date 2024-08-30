@@ -17,6 +17,7 @@ div.mdtag-code-container {
     padding-bottom: 1px;
     border-radius: 5px;
     background-color: #e4e4d1;
+    word-break: keep-all;
 }
 
 pre.mdtag-mermaid {

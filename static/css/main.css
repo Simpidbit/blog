@@ -33,7 +33,7 @@ body {
     transform: translate(-50%, 0);
     overflow: auto;
     word-wrap: break-word;
-    word-break: break-all;
+    word-break: keep-all;
 }
 #main-area::-webkit-scrollbar {
     display: none;

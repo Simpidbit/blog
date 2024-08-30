@@ -1,64 +1,126 @@
-// 渲染引用
 function __markdown_quote(raw) {
-    let ret = "";
-    let sentences = raw.split("\n");
     let regarr = [
-        /(?<=\s+)(\ *>){1}\ +/,
-        /(?<=\s+)(\ *>){2}\ +/,
-        /(?<=\s+)(\ *>){3}\ +/,
-        /(?<=\s+)(\ *>){4}\ +/,
-        /(?<=\s+)(\ *>){5}\ +/
+        /(?<=(\s+|^))(\ *>){1}\ +/,
+        /(?<=(\s+|^))(\ *>){2}\ +/,
+        /(?<=(\s+|^))(\ *>){3}\ +/,
+        /(?<=(\s+|^))(\ *>){4}\ +/,
+        /(?<=(\s+|^))(\ *>){5}\ +/
     ];
 
-    let last_level = -1;
-    let div_counter = 0;
-    let headhtml = "<div class=\"mdtag-quote" + last_level + "\">";
-    let tailhtml = "</div>";
-    for (let i = 0; i < sentences.length; i++) {
-        let is_quote_flag = 0;
-        for (let j = regarr.length - 1; j >= 0; j--) {
-            if (regarr[j].test(sentences[i])) {
-                // 此时 j 表示层数
-                is_quote_flag = 1;
-                sentences[i] = sentences[i].replace(regarr[j], "quote\x01quote");
+    // 第一阶段：将各行标记出level
 
-                // 找到占位符所在的位置，并干掉占位符
-                let sign_index = 0;
-                for (let m = 0; m < sentences[i].length; m++) {
-                    if (sentences[i].substr(m, 11) == "quote\x01quote") {
-                        sign_index = m;
-                        break;
-                    }
-                }
-                sentences[i] = sentences[i].replace("quote\x01quote", "");
+    let lines = raw.split('\n');
+    let line_quote_levels = __markdown_quote_mark_line_level(lines);
 
-                if (j != last_level) {
-                    headhtml = "<div class=\"mdtag-quote" + j + "\">";
-                    sentences[i] = sentences[i].slice(0, sign_index) + headhtml + sentences[i].substr(sign_index);
-                    div_counter++;
-                    last_level = j;
-                }
-
-                break;
+    // 第二阶段：根据标记出的level来渲染行
+    let tagnumber = 0;
+    for (let i = 0; i < lines.length; i++) {
+        let current_level = line_quote_levels[i];
+        let last_level = line_quote_levels[i - 1];
+        if (line_quote_levels[i] != 0) {// 有有效quotemark
+            if (i == 0) {                   // 第一行就是有效quotemark，此时last_level = undefined
+                lines[0] = lines[0].replace(
+                    /(?<=(\ |^))(>\ *)+\ /,
+                    `<div class=\"mdtag-quote${current_level - 1}\">`
+                );
+                tagnumber++;
+                continue;
             }
-        }
-        if (!is_quote_flag || i == sentences.length - 1) {      // quote断了
-            for (let j = 0; j < div_counter; j++) {
-                sentences[i] = tailhtml + sentences[i];
+
+            if (last_level == current_level) {  // level和上一行一样
+                lines[i] = lines[i].replace(/(?<=(\ |^))(>\ *)+\ /, "");
+            } else {                            // level和上一行不一样
+                lines[i] = lines[i].replace(
+                    /(?<=(\ |^))(>\ *)+\ /,
+                    `<div class=\"mdtag-quote${current_level - 1}\">`
+                );
+                tagnumber++;
             }
-            last_level = -1;
-            div_counter = 0;
+        } else {                        // 无有效quotemark
+            if (i == 0) {                   // 第一行，啥也不干
+                continue;                   
+            } else {                        // 不是第一行，要把尾巴补上，并重置各项数据
+                lines[i - 1] = lines[i - 1] + "</div>".repeat(tagnumber);
+                tagnumber = 0;
+            }
         }
     }
 
-
-    for (let i = 0; i < sentences.length; i++) {
-        if (i != sentences.length - 1) {
-            ret += sentences[i] + "\n";
+    // 第三阶段，组装lines
+    let ret = "";
+    for (let i = 0; i < lines.length; i++) {
+        if (i != lines.length - 1) {
+            ret += lines[i] + '\n';
         } else {
-            ret += sentences[i];
+            ret += lines[i];
         }
     }
 
     return ret;
+}
+
+/*
+    返回值结构:
+        [
+            ...
+            第一堆有效的连续quotemark出现几次,      // lines[i]
+            ...
+        ]
+*/
+function __markdown_quote_mark_line_level(lines) {
+    let ret = [];
+    let lastparse = null;
+    let lineparse = null;
+    for (let i = 0; i < lines.length; i++) {
+        lineparse = __markdown_quote_mark_line_parse(lines[i]);
+        if (lineparse[0]) {         // 前面有别的字符
+            if (lastparse != null && lastparse[0] && lastparse[1] != 0) {         // 上一个前面也有别的字符
+                ret.push(0);
+                // lastparse 一定要深拷贝
+                lastparse = JSON.parse(JSON.stringify(lineparse));
+                continue;
+            } else {                    // 上一个前面没有别的字符
+                ret.push(lineparse[1]);
+            }
+        } else {                    // 前面无别的字符
+            ret.push(lineparse[1]);
+        }
+
+        // lastparse 一定要深拷贝
+        lastparse = JSON.parse(JSON.stringify(lineparse));
+    }
+
+    return ret;
+}
+
+// [前面是否有别的字符, 第一次连续 > 出现几次]
+function __markdown_quote_mark_line_parse(line) {
+    line = combine_space(line);
+    let pieces = line.split(' ');
+
+    let is_begin = -1;
+    let has_divided_into_quotemark = false;
+    let marknumber = 0;
+    for (let i = 0; i < pieces.length; i++) {
+        if (/^>+$/g.test(pieces[i])) {    // 是 >*n
+            if (i == 0) {
+                is_begin = true;
+            }
+
+            if (!has_divided_into_quotemark) {
+                has_divided_into_quotemark = true;
+            }
+
+            marknumber += pieces[i].length;
+        } else {                        // 其他字符
+            if (i == 0) {
+                is_begin = false;
+            }
+
+            if (has_divided_into_quotemark) {
+                break;
+            }
+        }
+    }
+    return [!is_begin, marknumber];
 }

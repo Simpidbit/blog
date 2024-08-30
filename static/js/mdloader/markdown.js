@@ -22,8 +22,6 @@ function parse_markdown_to_html__local_markdown(raw) {
     // 引用渲染
     raw = __markdown_quote(raw);
 
-    console.log(raw);
-
     // 无序列表渲染
     raw = __markdown_ul_li(raw);
 
@@ -58,7 +56,7 @@ function parse_markdown_to_html__local_markdown(raw) {
     raw = parse_partof_md_to_html__local_markdown(raw, /\n\ *?\n/g, s => { return "<br />"; });
 
     // \t, must be the end
-    raw = parse_partof_md_to_html__local_markdown(raw, /\t/g, s => { return "&nbsp;".repeat(4); });
+    raw = parse_partof_md_to_html__local_markdown(raw, /\t/g, s => { return "&nbsp;".repeat(2); });
 
     // 连续多个空格, must be the end
     raw = parse_partof_md_to_html__local_markdown(raw, /\ \ +/g, s => {
@@ -71,7 +69,6 @@ function parse_markdown_to_html__local_markdown(raw) {
     // 还原受保护的特殊符号
     raw = __markdown_unescape_raw(raw);
 
-    console.log(raw);
 
     return raw;
 }

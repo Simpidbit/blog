@@ -16,8 +16,7 @@ function __markdown_code(raw) {
 
     // 行内代码`aowief`
     // 应放在代码块渲染之后
-    raw = parse_partof_md_to_html__local_markdown(raw, /`[^\n\r]*?`/g, s => {
-        s = __markdown_escape_HTML(s);
+    raw = parse_partof_md_to_html__local_markdown(raw, /`[^]*?`/g, s => {
         s = __markdown_escape_raw(s);
         return "<div class=\"mdtag-inline-code\">" + s.slice(1, s.length - 1) + "</div>";
     });

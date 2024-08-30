@@ -11,7 +11,7 @@ function catch_plain_text_from_element__local_loader(element) {
         if (mainchilds[i].nodeName == "#text") {
             if (mainchilds[i].nodeValue.trim().length == 0) continue;
             let div = NEW("DIV", { "class": "md-plain-text" });
-            if (mainchilds[i - 1].tagName == "BR") {
+            if (mainchilds[i - 1].tagName == "BR" && mainchilds[i - 2] == "BR") {
                 div.innerHTML = "&nbsp;".repeat(7) + mainchilds[i].nodeValue;
             } else {
                 div.innerHTML = mainchilds[i].nodeValue;
@@ -36,6 +36,7 @@ function update_markdown_to_main_area__interface_loader(path, firstTime = false)
         if (xhr.readyState === 4 && xhr.status === 200) {
             raw = xhr.responseText;
             let markdown = ID("main-area");
+            markdown.innerHTML = "";
             markdown.innerHTML = parse_markdown_to_html__local_markdown(raw);
             render_all_elements_to_mermaid__interface_mermaid(CLASS("mdtag-mermaid"));
             history.replaceState(null, null, "/root" + path);

@@ -1,19 +1,3 @@
-// 请求navigator JSON数据，并渲染到window.navigator_temp_container备用
-function render_navigator_from_JSON__interface_navigator() {
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/data/directory", true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            raw = xhr.responseText;
-            let directory_json = JSON.parse(raw);
-            window.navigator_temp_container = NEW("NAV", { "class": "content-nav" });
-            build_to_cursor_from_data__local_navigator(window.navigator_temp_container, directory_json, "/");
-        }
-    }
-    xhr.send();
-}
-
-
 /*
 {
     "hello.md": ["测试", 0],
@@ -24,57 +8,70 @@ function render_navigator_from_JSON__interface_navigator() {
     }]
 }
 */
-
-// 构建组成navigator的tag，可以是文件，也可以是目录
-function create_ele_for_navigator__local_navigator(name, serious_name, unfoldable, parentpath) {
-    let tag = NEW("LI", { "data-seriousname": serious_name });
-    if (unfoldable == 0) {          // file
-        let a = NEW("A", { "href": `javascript:update_markdown_to_main_area__interface_loader(\"${parentpath}${serious_name}\");` });
-        a.innerText = "📝 " + name;
-        tag.appendChild(a);
-    } else if (unfoldable == 1) {   // path
-        let details = NEW("DETAILS");
-        details.addEventListener("toggle", (event) => {
-            if (details.open) {
-            } else {
-            }
-        });
-
-        let summary = NEW("SUMMARY");
-        let ul = NEW("UL");
-
-        summary.innerText = "📂 " + name;
-        details.appendChild(summary);       details.appendChild(ul);
-        tag.appendChild(details);
-    }
-    return tag;
-}
-
-// 通过create_ele_for_navigator__local_navigator()创建tag
-// 并将这些tag组装起来
-// 并写入cursor (此时cursor更像是作为一个容器)
-// 注意：cursor_data与cursor并无直接联系
-// cursor_data的"cursor"是由于此函数递归调用而得名的
-function build_to_cursor_from_data__local_navigator(cursor, cursor_data, path) {
-    for (let key in cursor_data) {
-        if (cursor_data[key][1] == 0) {         // file
-            let tag = create_ele_for_navigator__local_navigator(
-                cursor_data[key][0], key, 0, path
-            );
-            cursor.appendChild(tag);
-        } else if (cursor_data[key][1] == 1) {  // path
-            let tag = create_ele_for_navigator__local_navigator(
-                cursor_data[key][0], key, 1, path
-            );
-            cursor.appendChild(tag);
-            build_to_cursor_from_data__local_navigator(
-                tag.firstElementChild.firstElementChild.nextElementSibling,
-                cursor_data[key][2],
-                path + key + "/"
+// 从json中解析出符合foldtree的list_data，方便后续foldtree的建立
+function parse_list_data_from_JSON__local_navigator(json, level, patharr) {
+    let keys = Object.keys(json);
+    for (let i = 0; i < keys.length; i++) {
+        if (json[keys[i]][1] == 0) {           // 文件
+            patharr[level - 1] = keys[i];
+            render_foldtree_to_ele_from_globaldata__interface_foldtree(
+                [[level, json[keys[i]][0]]], window.navigator_temp_container, "navigator",
+                {
+                    "class": "navigator-btn",
+                    "onclick": "this.parentElement.firstElementChild.nextElementSibling.click();",
+                    "btn-text": "📝"
+                },
+                {
+                    "class": "navigator-a",
+                    "href": `javascript:update_markdown_to_main_area__interface_loader(\"${get_pathname_from_path_queue__interface_pathque(patharr)}\", false);`
+                },
+                {
+                    "class": "navigator-div"
+                }, false, 30);
+        } else if (json[keys[i]][1] == 1) {    // 目录
+            patharr[level - 1] = keys[i];
+            render_foldtree_to_ele_from_globaldata__interface_foldtree(
+                [[level, json[keys[i]][0]]], window.navigator_temp_container, "navigator",
+                {
+                    "class": "navigator-btn",
+                    "btn-text": "📂"
+                },
+                {
+                    "class": "navigator-a",
+                    "onclick": "this.parentElement.firstElementChild.click();"
+                },
+                {
+                    "class": "navigator-div"
+                }, false, 30);
+            parse_list_data_from_JSON__local_navigator(
+                json[keys[i]][2],
+                level + 1,
+                JSON.parse(JSON.stringify(patharr))     // 必须是深拷贝
             );
         }
     }
 }
+
+// 请求navigator JSON数据，并渲染到window.navigator_temp_container备用
+function render_navigator_from_JSON__interface_navigator() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/data/directory", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            raw = xhr.responseText;
+            window.navigator_temp_container = NEW("div", { "class": "content-nav" });
+            let directory_json = JSON.parse(raw);
+            window.navigator_json = directory_json;
+            render_foldtree_to_ele_from_globaldata__interface_foldtree(
+                [],         null,                               "navigator",
+                null,       null,                               null,
+                true);
+            parse_list_data_from_JSON__local_navigator(directory_json, 1, []);
+        }
+    }
+    xhr.send();
+}
+
 
 // 前往根目录
 // 由 / 按钮的onclick属性调用
@@ -90,67 +87,7 @@ function goto_main_index__callback_navigator() {
     markdown.scrollTo(0, 0);
 }
 
-// 从cursor元素，沿着patharr展开
-// 返回最后一个可以展开的元素(DETAILS)，用于后续滚动定位
-function unfold_along_path__local_navigator(cursor, patharr) {
-    for (let i = 0; i < patharr.length; i++) {
-        let childs = cursor.children;
-        for (let j = 0; j < childs.length; j++) {       // 搜索cursor的子节点
-            if (childs[j].firstElementChild.tagName == "DETAILS") {         // 子节点包含Details
-                if (childs[j].getAttribute("data-seriousname") == patharr[i]) {         // 验证子节点seriousname
-                    childs[j].firstElementChild.open = true;
-                    if (i == patharr.length - 2) {
-                        return childs[j].firstElementChild.firstElementChild;
-                    }
-                    cursor = childs[j].firstElementChild.firstElementChild.nextElementSibling;      // 更新cursor
-                    break;          // 停止搜索，继续下一轮
-                }
-            }
-        }
-    }
-}
-
-// node是details下的summary
-// 将navigator移至对其此details
-function move_navigator_to_node__local_navigator(node, navigator) {
-    let details_rect = node.parentElement.getBoundingClientRect();
-    let navigator_rect = navigator.getBoundingClientRect();
-
-    navigator.scrollTo(details_rect.x  - navigator_rect.x, details_rect.y - navigator_rect.y);
-}
-
-
 // 前往上层目录
 // 由 < 按钮的onclick属性调用
 function goto_last_content__callback_navigator() {
-    window.html_title_digest = null;
-    ID("md-content").innerHTML = "";
-
-    // 获取地址栏内容并判断上级目录是谁
-    let pathname = window.location.pathname;
-    paths = pathname.split("/");
-    paths.shift();      // ""
-    paths.shift();      // "root"
-
-    // 将上级目录写入地址栏
-    let newpath = "/root";
-    for (let k = 0; k < paths.length - 1; k++) {
-        newpath += "/" + paths[k];
-    }
-    history.replaceState(null, null, "/root");
-
-    // 按照上级目录的位置展开
-    let anchorElement = unfold_along_path__local_navigator(window.navigator_temp_container, paths);
-
-    // 将navigator写入主界面（id=markdown）
-    let markdown = ID("main-area");
-    markdown.innerHTML = "";
-    markdown.appendChild(window.navigator_temp_container);
-
-    // 移动到上级目录的位置
-    if (paths.length <= 1) {
-        markdown.scrollTo(0, 0);
-    } else {
-        move_navigator_to_node__local_navigator(anchorElement, markdown);
-    }
 }

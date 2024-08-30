@@ -183,6 +183,42 @@
 
   ​	将`/root`写入地址栏路径
 
+  
+
+#### foldtree.js
+
+是一个抽象的节点树
+
+**接口**：
+
+- > ` render_foldtree_to_ele_from_globaldata__interface_foldtree(
+  >  list_data,    ele,       key,
+  >  btn_attributes,    a_attributes,   div_attributes，` 
+  >
+  > `whether_clear)`
+
+​	输入：
+
+​		`list_data`：以列表的形式顺序列出所有label，格式：[ [逻辑层级, 内容], [逻辑层级, 内容], ... ]
+
+​		`ele`：这棵树写到哪个元素上
+
+​		`key`：树的名字，关系到树的临时数据存放
+
+​		`btn_attributes`：折叠按钮的属性，键值对的value为函数时，键对应的值为函数的返回值，函数传入参数(list_data, 此时list_data的索引位置)，下同
+
+​		`a_attributes`：折叠按钮后面链接（内容）的属性
+
+​		`div_attributes`：一对超链接和按钮组成的label的属性
+
+​		`whether_clear`：布尔值，是否清空`window.foldtree_isfold_data[key]`的数据
+
+  	输出：
+
+​		节点树写入`ele`元素
+
+​		将这棵树的折叠数据写入`window.foldtree_isfold_data[key]`
+
   ​	
 
   
@@ -237,50 +273,27 @@
 
 ### 用到的全局变量(window.xxx)
 
-#### window.html_title_digest
+#### window.foldtree_isfold_data
 
-**说明**：扫描html标题结构时，用于保存标题结构，以方便后续左侧目录的构造
-
-**类型**：数组
-
-**结构**：
-
-```javascript
-[
-    [第几级标题, 标题内容],
-    [第几级标题, 标题内容],
-    ...
-]
-    
-例如：
-[
-    [1, "Hello一级标题"],
-    [2, "这是第二级标题"]
-]
-```
-
-**更改此变量的函数**：`scan_html_title__local_mdcontent`、`goto_last_content__callback_navigator`、`goto_main_index__callback_navigator`
-
-**仅读取此变量的函数（不含更改）**：`render_mdcontent_from_globaldata__interface_mdcontent`
-
-
-
-#### window.mdcontent_label_state
-
-**说明**：为了实现左侧目录点击时的展开/折叠动作，需要一个变量保存左侧目录中各行的显示状态，即此变量
+**说明**：为了实现折叠树点击时的展开/折叠动作，需要一个变量保存各折叠树各行的显示状态，即此变量
 
 **类型**：数组
 
 **结构**：
 
 ```javascript
-[
-    [状态, 元素1, 元素2, 元素3, ...],
-    [状态, 元素1, 元素2, 元素3, ...],
-    ...
-]
+{
+    树名: [
+        树附着的元素, 
+        [
+        	[状态, 元素1, 元素2, 元素3, ...],
+    		[状态, 元素1, 元素2, 元素3, ...],
+    		...
+    	]
+    ]
+}
     
-例如：
+状态例如：
 [
     ["closed", 元素1, 元素2, 元素3],		// 目录中的0号标题折叠
     ["open"]							// 目录中的1号标题展开
@@ -289,10 +302,10 @@
 
 注意：
 
-- "close"后面的元素是被折叠的元素，存在`window.mdcontent_label_state`里是为了方便后续再显示这些元素，"open"后面没有元素
-- `window.mdcontent_label_state`的第`i`索引位置保存的即为id为`i`的标题的折叠/展开数据
+- "close"后面的元素是被折叠的元素，存在`window.foldtree_isfold_data`里是为了方便后续再显示这些元素，"open"后面没有元素
+- `window.foldtree_isfold_data`的第`i`索引位置保存的即为id为`i`的标题的折叠/展开数据
 
-**更改此变量的函数**：`render_mdcontent_from_globaldata__interface_mdcontent`、`fold_mdcontent_label__callback_mdcontent`
+**更改此变量的函数**：`render_foldtree_to_ele_from_globaldata__interface_foldtree`、`fold_foldtree_label__callback_mdcontent`
 
 
 
