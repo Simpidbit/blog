@@ -1,3 +1,13 @@
+/**
+ * 判断给定的字符串是否为开始标签、结束标签或自闭合标签
+ * 如果是开始标签，返回 "begin"
+ * 如果是结束标签，返回 "end"
+ * 如果是自闭合标签，返回 "self"
+ * 如果是未知类型的标签，打印警告并返回 "unknown"
+ *
+ * @param {string} tagstr - 要检查的字符串
+ * @returns {string} - 表示标签类型的字符串
+ */
 function __markdown_ul_li_tag_begin_or_end(tagstr) {
     if (/\<\w+([^\<\>\/]+)?\>/g.test(tagstr)) {
         return "begin";
@@ -12,24 +22,72 @@ function __markdown_ul_li_tag_begin_or_end(tagstr) {
 }
 
 
+/**
+ * 分析给定的 HTML 片段，提取出所有的标签并打印到控制台
+ *
+ * @param {string[]} ret - 一个字符串数组，这里假设 ret[0] 包含要分析的 HTML 内容
+ * @param {string} raw - 原始的 HTML 内容
+ * @returns {string} raw - 返回被修改后的 HTML 内容
+ */
 function __markdown_ul_li_single_li(ret, raw) {
-    console.log("分析: ", ret[0]);
+    let offset = ret.index;
     let tag_reg = /\<\/?\w+([^\<\>]+)?\>/g;
     let tag_ret = null;
     tag_ret = tag_reg.exec(ret[0]);
 
-
+    let unend_tag_number = 0;
+    let last_tag_ret = tag_ret;
     while (tag_ret != null) {
-        console.log(tag_ret[0]);
+        switch (__markdown_ul_li_tag_begin_or_end(tag_ret[0])) {
+            case "begin":
+                unend_tag_number++;
+                break;
+            case "end":
+                unend_tag_number--;
+                break;
+            case "unknown":
+                break;
+        }
+        last_tag_ret = tag_ret;
         tag_ret = tag_reg.exec(ret[0]);
     }
-
+    if (unend_tag_number > 0) {
+        tag_reg.lastIndex = offset + last_tag_ret.index + last_tag_ret[0].length;
+        // 往后直到unend_tag_number = 0
+        while (true) {
+            tag_ret = tag_reg.exec(raw);
+            switch (__markdown_ul_li_tag_begin_or_end(tag_ret[0])) {
+                case "begin":
+                    unend_tag_number++;
+                    break;
+                case "end":
+                    unend_tag_number--;
+                    break;
+                case "unknown":
+                    break;
+            }
+            if (unend_tag_number == 0) break;
+        }
+        // 之间的\n全部换成X
+        for (let i = offset + last_tag_ret.index + last_tag_ret[0].length - 1;
+                 i < tag_ret.index; i++) {
+            if (raw[i] == '\n') {
+                raw = raw.slice(0, i) + '\x1d' + raw.substr(i + 1);
+            };
+        }
+    }
 
     return raw;
 }
 
 
 // 任务：把 - 后面能看成一个整体的节点的开始和结束之间的\n替换为\x1d
+/**
+ * 对给定的原始 Markdown 文本进行处理，为所有的 HTML 标签进行标记，并对文本中的每个列表项（li）进行单独处理
+ *
+ * @param {string} raw - 原始 Markdown 文本
+ * @return {string} - 处理后的 Markdown 文本
+ */
 function __markdown_ul_li_patch_entire(raw) {
     // 首先给所有的html标签打上label
 

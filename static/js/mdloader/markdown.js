@@ -16,15 +16,17 @@ function parse_markdown_to_html__local_markdown(raw) {
     // 去除字符串开头和结尾的空格
     raw = raw.trim();
 
+
     // code，必须放在前面，对code内的特殊符号进行保护
     raw = __markdown_code(raw);
+
 
     // 引用渲染
     raw = __markdown_quote(raw);
 
     // 无序列表渲染
     raw = __markdown_ul_li(raw);
-
+    raw = raw.replaceAll('\x1d', '\n');
 
     // 表格渲染
     raw = __markdown_table(raw);
@@ -68,6 +70,7 @@ function parse_markdown_to_html__local_markdown(raw) {
 
     // 还原受保护的特殊符号
     raw = __markdown_unescape_raw(raw);
+
 
 
     return raw;
