@@ -192,10 +192,9 @@
 **接口**：
 
 - > ` render_foldtree_to_ele_from_globaldata__interface_foldtree(
-  >  list_data,         ele,            key,
-  >  btn_attributes,    a_attributes,   div_attributes,
+  >  list_data,    ele,       key,
+  >  btn_attributes,    a_attributes,   div_attributes, 
   >  whether_clear)`
-
 
 ​	输入：
 
@@ -243,7 +242,7 @@
 
 **接口**：
 
-- > `async_try_until_ok__interface_wait(func, ms, args = null)`
+- > `async_try_until_ok__interface_wait(func, ms, args = null)` 
 
   输入：
 

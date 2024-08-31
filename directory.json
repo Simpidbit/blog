@@ -1,11 +1,1 @@
-{
-    "hello.md": ["测试", 0],
-    "math": ["数学", 1, {
-        "bajian": ["拔尖", 1, {
-            "note.md": ["笔记", 0]
-        }]
-    }],
-    "program": ["项目", 1, {
-        "blog.md": ["blog开发文档", 0]
-    }]
-}
+{"hello.md": ["\u6d4b\u8bd5", 0], "math": ["\u6570\u5b66", 1, {"bajian": ["\u62d4\u5c16", 1, {"note.md": ["\u7b14\u8bb0", 0]}]}], "program": ["\u9879\u76ee", 1, {"blog.md": ["blog\u5f00\u53d1\u6587\u6863", 0], "test.md": ["\u5fc5\u597d", 0]}]}
