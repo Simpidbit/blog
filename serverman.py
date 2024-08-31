@@ -9,40 +9,12 @@ import os
 GET_PORT = 9999
 SEND_PORT = 12555
 
-if platform.system() == "Windows":
-    SEP_SYMBOL = '\\'
-else:
-    SEP_SYMBOL = '/'
-
+if platform.system() == "Windows": SEP_SYMBOL = '\\'
+else: SEP_SYMBOL = '/'
 
 BEGIN_PATH = f'.{SEP_SYMBOL}root'
-JS_PATH = f".{SEP_SYMBOL}directory.json"
+JSON_PATH = f".{SEP_SYMBOL}directory.json"
 
-
-test_data = {
-    "hello.md": ["测试", 0],
-    "math": ["数学", 1, {
-        "bajian": ["拔尖", 1, {
-            "note.md": ["笔记", 0]
-        }]
-    }],
-    "program": ["项目", 1, {
-        "blog.md": ["blog开发文档", 0]
-    }]
-}
-
-test_data2 = {
-    "hello.md": ["测试", 0],
-    "math": ["数学", 1, {
-        "bajian": ["拔尖", 1, {
-            "note.md": ["笔记", 0]
-        }]
-    }],
-    "program": ["项目", 1, {
-        "blog.md": ["blog开发文档", 0],
-        "test.md": ["测试一下", 0]
-    }]
-}
 
 def find_newfile_path(origindt, newdt, pathlist):
 
@@ -77,11 +49,11 @@ def find_newfile_path(origindt, newdt, pathlist):
 
 
 def send_handler(json_data, fileraw):
-    with open(JS_PATH, "rt") as f:
+    with open(JSON_PATH, "rt") as f:
         old_data = f.read()
     old_data = json.loads(old_data)
     pathlist = find_newfile_path(old_data, json_data, [])
-    with open(JS_PATH, "wt") as f:
+    with open(JSON_PATH, "wt") as f:
         f.write(json.dumps(json_data))
 
     print(f"pathlist: {pathlist}")
@@ -116,7 +88,7 @@ def send_handler(json_data, fileraw):
 
 
 def update_handler(pathlist, fileraw):
-    with open(JS_PATH, "rt") as f:
+    with open(JSON_PATH, "rt") as f:
         old_data = f.read()
     old_data = json.loads(old_data)
 
@@ -133,19 +105,19 @@ def update_handler(pathlist, fileraw):
 
     
 
-def get_server():
+def get_json_server():
     while True:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind(("0.0.0.0", GET_PORT))
         sock.listen(32)
         conn, addr = sock.accept()
-        with open(JS_PATH, "rt") as f:
+        with open(JSON_PATH, "rt") as f:
             data = f.read()
         conn.send(json.dumps(data).encode("utf-8"))
         conn.close()
         sock.close()
 
-def send_server():
+def send_file_server():
     while True:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind(("0.0.0.0", SEND_PORT))
@@ -170,8 +142,8 @@ def send_server():
             update_handler(pathlist, file_raw)
 
 if __name__ == '__main__':
-    get_th = threading.Thread(target = get_server)
-    send_th = threading.Thread(target = send_server)
+    get_th = threading.Thread(target = get_json_server)
+    send_th = threading.Thread(target = send_file_server)
 
     send_th.start()
     get_th.start()
