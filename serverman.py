@@ -85,20 +85,22 @@ def send_handler(json_data, fileraw):
         f.write(json.dumps(json_data))
 
     print(f"pathlist: {pathlist}")
-    cursor = json_data
+    new_cursor = json_data
+    old_cursor = old_data
     index = 0
     pathstr = BEGIN_PATH
     while True:
         print(f"while开始, index = {index}, pathlist[index] = {pathlist[index]}")
         print(f"开始时pathstr: {pathstr}")
-        if pathlist[index] in cursor.keys():     # 在里面
+        if pathlist[index] in old_cursor.keys():     # 在里面
             pathstr += f"{SEP_SYMBOL}{pathlist[index]}"
             if index == len(pathlist) - 1:
                 with open(pathstr, "wt") as f:
                     f.write(fileraw)
                 return
             else:
-                cursor = cursor[pathlist[index]][2]
+                old_cursor = old_cursor[pathlist[index]][2]
+                new_cursor = new_cursor[pathlist[index]][2]
                 index += 1
         else:       # 不在里面
             if index == len(pathlist) - 1:      # 是最后一位
@@ -109,7 +111,7 @@ def send_handler(json_data, fileraw):
             else:       # 不是最后一位
                 pathstr += f"{SEP_SYMBOL}{pathlist[index]}"
                 os.system(f"mkdir {pathstr}")
-                cursor = cursor[pathlist[index]][2]
+                new_cursor = new_cursor[pathlist[index]][2]
                 index += 1
 
 
