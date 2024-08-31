@@ -5,8 +5,8 @@ Python没有内置的像其他语言的switch那样的模式匹配功能，
 人们只能用if...elif...else来模拟所谓 "switch" 的功能。
 Python3.10之后，加入了match...case语句，就是Python的 "switch" 功能
 
-**语法：**
 
+语法:
 ```python
 match var:
     case var1:
@@ -24,8 +24,7 @@ match var:
 
 
 
-**例如：**
-
+例如：
 ```python
 match input("输入一个数字"):
     case 1:
@@ -33,6 +32,5 @@ match input("输入一个数字"):
     case 2:
         print("你输入的是2")
     case _:
-        print("你输入的既不是1也不是2")
 ```
 

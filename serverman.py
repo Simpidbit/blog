@@ -115,8 +115,23 @@ def send_handler(json_data, fileraw):
                 index += 1
 
 
-def update_handler(json_data, fileraw):
-    pass
+def update_handler(pathlist, fileraw):
+    with open(JS_PATH, "rt") as f:
+        old_data = f.read()
+    old_data = json.loads(old_data)
+
+    cursor = old_data
+    index = 0
+    pathstr = ""
+    for key in pathlist[:-1]:
+        pathstr += f"{SEP_SYMBOL}{key}"
+        cursor = cursor[key][2]
+
+    filename = pathlist[-1]
+    with open(f"{BEGIN_PATH}{pathstr}{SEP_SYMBOL}{filename}", "wt") as f:
+        f.write(fileraw)
+
+    
 
 def get_server():
     while True:
