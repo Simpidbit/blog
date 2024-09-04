@@ -184,22 +184,29 @@ def send_file_server():
         file_raw_data = raw_piece[1]
         
         # 根据消息头的第一个字符判断客户端的操作类型，若是 "S" 则为发送新文件
-        if raw[0] == "S":
-            # 打印客户端发送的目录结构数据
-            json_data = data
-            print(f"Send: {json_data}")
-            file_raw_json = json.loads(file_raw_data)
-            print(f"file_raw_json: {file_raw_json}")
-            send_handler(json_data, file_raw_json)
-        # 若是 "U" 则为更新已存在文件的内容  
-        elif raw[0] == "U":
-            # 打印客户端发送的更新操作信息
-            pathlist = data
-            print(f"Update: {pathlist}")
-            # 打印客户端发送的文件更新数据
-            print(f"fileraw: {file_raw}")
-            # 调用处理更新操作的函数，更新目录中已存在文件的内容
-            update_handler(pathlist, file_raw_data)
+        match raw[0]:
+            case 'S':
+                # 打印客户端发送的目录结构数据
+                json_data = data
+                print(f"Send: {json_data}")
+                file_raw_json = json.loads(file_raw_data)
+                print(f"file_raw_json: {file_raw_json}")
+                send_handler(json_data, file_raw_json)
+            case 'U':
+                # 若是 "U" 则为更新已存在文件的内容  
+                # 打印客户端发送的更新操作信息
+                pathlist = data
+                print(f"Update: {pathlist}")
+                # 打印客户端发送的文件更新数据
+                print(f"fileraw: {file_raw}")
+                # 调用处理更新操作的函数，更新目录中已存在文件的内容
+                update_handler(pathlist, file_raw_data)
+            case 'R':
+                pass
+            case 'D':
+                pass
+            case _:
+                pass
 
 if __name__ == '__main__':
     # 创建线程，目标函数是 get_json_server()，即启动一个服务器，用于响应客户端获取目录结构 JSON 数据的请求

@@ -101,12 +101,27 @@ def add_article_with_name__None(argdict: dict):
     new_data = old_data
     blog.correspond.add_files_to_server__None(new_data, {f"{filepath}{SEP_SYMBOL}{serious_name}": fileraw})
 
+
+"""
+    python .\\client.py -g d
+        远程下载某篇文章
+"""
 def download_article__None():
     pass
 
+
+"""
+    python .\\client.py -u filename
+        将filename作为更新内容，更新某篇文章
+"""
 def update_with_file__None():
     pass
 
+
+"""
+    python .\\client.py -u p
+        先从远程获取先前的文章，再改，改了之后再更新到远程
+"""
 def pull_and_update__None():
     pass
 

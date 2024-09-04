@@ -1,4 +1,6 @@
-from simblogpy.log import print_func_to_log
+#from simblogpy.log import print_func_to_log
+from log import print_func_to_log
+import sys
 
 """
     Args:
@@ -22,6 +24,7 @@ def argv_parse_to_dict__dict(argv):
         else:
             arglist.append(each)
 
+
     argdict = { "__ANONYMOUS": list() }
     for element in arglist:
         if isinstance(element, str):
@@ -37,3 +40,5 @@ def argv_parse_to_dict__dict(argv):
                 raise IndexError(f"argv_analysis: Unexpected element: {element}")
     return argdict
 
+if __name__ =='__main__':
+    print(argv_parse_to_dict__dict(sys.argv))
