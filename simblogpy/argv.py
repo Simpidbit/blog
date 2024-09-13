@@ -16,6 +16,9 @@ def argv_parse_to_dict__dict(argv):
     for each in argv:
         if each[0] == '-':
             option = each
+            # 在这里append，因为后面hash后相同的key会相撞
+            # 不用担心出现[[option1, ""], [option1, value]]的问题
+            arglist.append([option, ""])
             continue
 
         if option != "":

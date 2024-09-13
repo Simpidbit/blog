@@ -1,0 +1,63 @@
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+Return value: /program
+The function finishes.
+================= choose_path_without_mkdir__str end =================
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+Return value: /program
+The function finishes.
+================= choose_path_without_mkdir__str end =================
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+Return value: /program
+The function finishes.
+================= choose_path_without_mkdir__str end =================
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+Return value: /coding_language/python3
+The function finishes.
+================= choose_path_without_mkdir__str end =================
+
+
+################### NEW BEGINNING ##################
+
+================= choose_path_without_mkdir__str begin =================
+About to enter the function: choose_path_without_mkdir__str
+The documentation of the function: Choose a path, NO mkdir!
+Real parameters: ({'program': ['项目', 1, {'blog.md': ['我的博客 - 开发文档', 0]}], 'coding_language': ['编程语言', 1, {'python3': ['Python3', 1, {'Python3.10_match_case.md': ['Python3.10 新特性：match...case语句', 0]}]}], 'operating_system': ['操作系统', 1, {'linux': ['linux', 1, {'ubuntu': ['Ubuntu', 1, {'Ubuntu_apt_change_source.md': ['Ubuntu apt换源', 0]}]}]}]},), {}
+Return value: /coding_language/python3/Python3.10_match_case.md
+The function finishes.
+================= choose_path_without_mkdir__str end =================
