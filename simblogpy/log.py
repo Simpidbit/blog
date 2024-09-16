@@ -1,6 +1,8 @@
 import inspect
+import platform
 
-LOGFILE_PATH = ".\\client.log"
+SEP_SYMBOL = '\\' if platform.system() == "Windows" else "/"
+LOGFILE_PATH = f".{SEP_SYMBOL}client.log"
 
 with open(LOGFILE_PATH, "a") as f:
     f.write("\n\n################### NEW BEGINNING ##################\n\n")
