@@ -1,3 +1,5 @@
+import inspect
+
 LOGFILE_PATH = ".\\client.log"
 
 with open(LOGFILE_PATH, "a") as f:
@@ -7,11 +9,15 @@ def printlog(s):
     with open(LOGFILE_PATH, "a") as f:
         f.write(s + '\n')
 
-# This is a decorator function
+
 def print_func_to_log(func):
+    """
+    打印func的日志信息、函数文档等
+
+    """
     def wrapper(*args, **kwargs):
         if func.__doc__ is None:
-            raise Exception(f"print_to_log: Function without documentation:" +
+            raise Exception(f"print_func_to_log: Function without documentation:" +
                             f" {func.__name__}")
         else :
             printlog(f"================= {func.__name__} begin =================")
@@ -25,3 +31,11 @@ def print_func_to_log(func):
             return result
     return wrapper
 
+@print_func_to_log
+def testf(a : int, b : str):
+    """ Test. """
+    print(f"testf: a = {a}, b = {b}")
+
+if __name__ == '__main__':
+    pass
+    testf(10, "hi")

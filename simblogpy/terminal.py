@@ -31,8 +31,11 @@ def choose_path_cmd__None(curlayer, choose, keylist):
 
 
 @print_func_to_log
-def choose_path_may_mkdir__str(json_dict, serious_name, title_name):
-    """Choose a path, but maybe mkdir."""
+def choose_path_may_mkdir__str(json_dict : dict, serious_name : str, title_name : str):
+    """
+    选择一个文件或目录，期间可以新建目录，新建的目录会被合并到原来的JSON中，
+    服务端会把JSON数据中新增的目录检测出来并落实
+    """
     pathstr = ""
     curlayer = json_dict
     while True:
@@ -43,25 +46,25 @@ def choose_path_may_mkdir__str(json_dict, serious_name, title_name):
             print(f"{type(curlayer)}")
         keylist = blog.filejson.lslayer__list(curlayer)
 
-        try:
+        try:                            # 输入选择，并转为数字
             choose = input("> ")
             choose = int(choose)
-        except ValueError:
+
+            if choose == -1:                # 就是这里
+                curlayer[serious_name] = [title_name, 0]
+                print(json_dict)
+                break
+            elif choose > len(keylist):     # 选择的进入的目录索引过大
+                raise IndexError("Too big index.")
+            else:                           # 选择的目录索引正常
+                chosen_key = keylist[choose]
+                if curlayer[chosen_key][1] == 0:        # 选择的是文件，让pathstr带上文件名之后直接返回
+                    pathstr += f"{SEP_SYMBOL}{chosen_key}"
+                    break
+                elif curlayer[chosen_key][1] == 1:      # 选择的是目录，继续迭代
+                    curlayer = curlayer[chosen_key][2]
+            pathstr += f"{SEP_SYMBOL}{chosen_key}"
+        except ValueError:              # 若无法成功转为数字，按照mkdir指令处理
             choose_path_cmd__None(curlayer, choose, keylist)
             continue
-
-        if choose > len(keylist): raise IndexError("Too big index.")
-
-        if choose == -1:
-            curlayer[serious_name] = [title_name, 0]
-            print(json_dict)
-            break
-        else:
-            chosen_key = keylist[choose]
-            if curlayer[chosen_key][1] == 0:
-                pathstr += f"{SEP_SYMBOL}{chosen_key}"
-                break
-            elif curlayer[chosen_key][1] == 1:
-                curlayer = curlayer[chosen_key][2]
-        pathstr += f"{SEP_SYMBOL}{chosen_key}"
     return pathstr

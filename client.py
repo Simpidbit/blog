@@ -78,15 +78,17 @@ def add_article_anonymous__None():
 
 
 """
-    python .\\client.py -a filename [-n titlename] [-s serious_name]
-        Add article with titlename. If -s is given, then specify the serious_name of the article.
-                                    If not, then require the user to input a serious_name.
+    python .\\client.py -a filename [-n title_name] [-s serious_name]
+        -a必须有，指定添加哪个文件作为文章      ( -a means add )
+        -n设置标题名，-s设置路径名，缺啥补啥
 """
 def add_article_with_name__None(argdict: dict):
+    # -n -s 缺啥补啥
     if '-n' not in argdict.keys():
         argdict['-n'] = input("请输入文章的title名: ")
     if '-s' not in argdict.keys():
         argdict['-s'] = input("请输入文章serious_name: ")
+
     old_data = blog.correspond.get_json_from_server__dict()
     print(f"old_data: {type(old_data)}")
     fileraw = ""
@@ -140,9 +142,10 @@ def reorder_by_mode():
 """
 命令:
     python .\\client.py
-        Anonymous article addition.
-    python .\\client.py -a filename [-n name] [-s serious_name]
-        添加名为name的文章, 若有-s选项，则指定文章serious_name，若没有，则默认filename为文章的serious_name
+        anonymous article addition.
+    python .\\client.py -a filename [-n title_name] [-s serious_name]
+        -a必须有，指定添加哪个文件作为文章      ( -a means add )
+        -n设置标题名，-s设置路径名，缺啥补啥
 
 
     python .\\client.py -g
@@ -167,8 +170,18 @@ def reorder_by_mode():
         以某种标准对文章/目录重新排序
 """
 def route_based_argdict__None(argdict):
+    """
+    python .\\client.py
+        anonymous article addition.
+    """
     if len(argdict["__ANONYMOUS"]) == 1:        # Anonymous article addition
         add_article_anonymous__None()
+
+    """
+    python .\\client.py -a filename [-n title_name] [-s serious_name]
+        -a必须有，指定添加哪个文件作为文章      ( -a means add )
+        -n设置标题名，-s设置路径名，缺啥补啥
+    """
     if "-a" in argdict.keys():                  # Add article with name
         add_article_with_name__None()
 
