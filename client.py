@@ -70,7 +70,7 @@ def add_article_anonymous__None():
     serious_name = input("serious_name: ")
     title_name = input("title_name: ")
 
-    filepath = blog.terminal.choose_path_may_mkdir__str(old_data, serious_name, title_name)
+    filepath = blog.terminal.insert_file_to_path_may_mkdir__str(old_data, serious_name, title_name)
     print(f"filepath: {filepath}")
 
     new_data = old_data
@@ -97,7 +97,7 @@ def add_article_with_name__None(argdict: dict):
     serious_name = argdict['-s']
     title_name = argdict['-n']
 
-    filepath = blog.terminal.choose_path_may_mkdir__str(old_data, serious_name, title_name)
+    filepath = blog.terminal.insert_file_to_path_may_mkdir__str(old_data, serious_name, title_name)
     print(f"filepath: {filepath}")
 
     new_data = old_data
@@ -107,9 +107,13 @@ def add_article_with_name__None(argdict: dict):
 """
     python .\\client.py -g d
         远程下载某篇文章
+
+    报文格式：
+        f"G{filepath(with serious_name)}"
 """
-def download_article__None():
-    pass
+def download_article__None(argdict: dict):
+    json_data = blog.correspond.get_json_from_server__dict()
+    filepath = blog.terminal.choose_path_without_mkdir__str(json_data)
 
 
 """
@@ -184,6 +188,9 @@ def route_based_argdict__None(argdict):
     """
     if "-a" in argdict.keys():                  # Add article with name
         add_article_with_name__None()
+    if "-g" in argdict.keys():                  # Download article from server.
+        download_article__None()
+
 
 
 if __name__ == '__main__':

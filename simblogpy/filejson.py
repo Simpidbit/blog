@@ -77,6 +77,21 @@ def scan_file_json_to_path(data, curlist, paths) -> list:
         else:
             paths.append([build_pathstr_from_list(curlist + [key]), data[key][1]])
 
+def what_type_this_path_is__int(data, filepath) -> int:
+    pathlist = filepath.split('/')
+    pathlist = pathlist[1:]
+
+    cursor = None
+    index = 0
+    while True:
+        for key in data.keys():
+            if key == pathlist[index]:
+                if index == len(pathlist) - 1:      # Return
+                    return data[key][1]
+                cursor = data[key][2]
+                index += 1
+                break
+
 
 def get_file_dir__str(filepath) -> str:
     """Get the directory path where the file is located."""
