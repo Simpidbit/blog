@@ -67,15 +67,11 @@ function parse_markdown_to_html__local_markdown(raw) {
         return ret;
     });
 
-
     // 还原受保护的特殊符号
     raw = __markdown_unescape_raw(raw);
 
-    
     // 备案号悬挂
-    raw += "<br /><br /><br /><hr /><a href=\"https://beian.miit.gov.cn/\" target=\"_blank\">皖ICP备2024060108号-1</a>";
-
-    
+    raw += "<br /><br /><br /><hr /><a href=\"https://beian.miit.gov.cn/\" target=\"_blank\">皖ICP备2024060108号-1</a><br /><br />";
 
     return raw;
 }
