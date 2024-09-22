@@ -15,7 +15,12 @@ function parse_list_data_from_JSON__local_navigator(json, level, patharr) {
         if (json[keys[i]][1] == 0) {           // 文件
             patharr[level - 1] = keys[i];
             render_foldtree_to_ele_from_globaldata__interface_foldtree(
-                [[level, json[keys[i]][0]]], window.navigator_temp_container, "navigator",
+                [
+                    [
+                        level,
+                        json[keys[i]][0]
+                    ]
+                ], window.navigator_temp_container, "navigator",
                 {
                     "class": "navigator-btn",
                     "onclick": "this.parentElement.firstElementChild.nextElementSibling.click();",
@@ -31,7 +36,12 @@ function parse_list_data_from_JSON__local_navigator(json, level, patharr) {
         } else if (json[keys[i]][1] == 1) {    // 目录
             patharr[level - 1] = keys[i];
             render_foldtree_to_ele_from_globaldata__interface_foldtree(
-                [[level, json[keys[i]][0]]], window.navigator_temp_container, "navigator",
+                [
+                    [
+                        level,
+                        json[keys[i]][0]
+                    ]
+                ], window.navigator_temp_container, "navigator",
                 {
                     "class": "navigator-btn",
                     "btn-text": "📂"
@@ -67,6 +77,11 @@ function render_navigator_from_JSON__interface_navigator() {
                 null,       null,                               null,
                 true);
             parse_list_data_from_JSON__local_navigator(directory_json, 1, []);
+
+            // 还要再设置每个label的data-id，因为parse_list_data_from_JSON__local_navigator内部data-id一开始全都是0
+            for (let i = 0; i < window.navigator_temp_container.childNodes.length; i++) {
+                window.navigator_temp_container.childNodes[i].setAttribute("data-id", i.toString());
+            }
         }
     }
     xhr.send();
