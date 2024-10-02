@@ -5,9 +5,6 @@ import copy
 import os
 import platform
 
-from simblogpy.filejson import scan_file_json_to_path, get_file_dir__str
-from simblogpy.string import SEP_SYMBOL
-from simblogpy.log import print_to_log
 
 GET_PORT = 9999
 SEND_PORT = 12555
@@ -16,6 +13,35 @@ SEP_SYMBOL = '\\' if platform.system() == "Windows" else "/"
 
 BEGIN_PATH = f'.{SEP_SYMBOL}root'
 JSON_PATH = f".{SEP_SYMBOL}directory.json"
+
+def build_pathstr_from_list__local_str(pathlist):
+    pathstr = ""
+    for each in pathlist:
+        pathstr += f"{SEP_SYMBOL}{each}"
+    return pathstr
+
+def get_file_dir__local_str(filepath) -> str:
+    """Get the directory path where the file is located."""
+    path = filepath
+    while True:
+        path = path[:-1]
+        if len(path) == 0:
+            break
+        if path[-1] == SEP_SYMBOL:
+            break
+    if len(path) != 0:
+        path = path[:-1]
+    return path
+
+def scan_file_json_to_path__local_list(data, curlist, paths) -> list:
+    for key in data:
+        if data[key][1] == 1:
+            if len(data[key][2].keys()) == 0:
+                paths.append([build_pathstr_from_list__local_str(curlist + [key]), data[key][1]])
+            else:
+                scan_file_json_to_path__local_list(data[key][2], copy.deepcopy(curlist + [key]), paths)
+        else:
+            paths.append([build_pathstr_from_list__local_str(curlist + [key]), data[key][1]])
 
 def recv_all__local_bytes(sock, bufsiz=1024) -> bytes:
     """Receive until no more data."""
@@ -28,12 +54,12 @@ def recv_all__local_bytes(sock, bufsiz=1024) -> bytes:
     return data
 
 
-"""
-old_pathlists or new_pathlists: [ ["filepath", 0 or 1(filetype)], ... ]
-"""
-@print_to_log
 def diff_between_old_new__list(old_pathlists, new_pathlists):
-    """Return what new_pathlists has but old_pathlists doesn't."""
+    """
+    Return what new_pathlists has but old_pathlists doesn't.
+
+    old_pathlists or new_pathlists: [ ["filepath", 0 or 1(filetype)], ... ]
+    """
     compare = []
     for each in new_pathlists:
         if each in old_pathlists:
@@ -64,8 +90,8 @@ def send_handler(json_data, filerawdict):
     # 通过比较旧数据和新数据，找出新文件的路径
     old_pathlists = []
     new_pathlists = []
-    scan_file_json_to_path(old_data, [], old_pathlists)
-    scan_file_json_to_path(json_data, [], new_pathlists)
+    scan_file_json_to_path__local_list(old_data, [], old_pathlists)
+    scan_file_json_to_path__local_list(json_data, [], new_pathlists)
 
     compare_pathlists = diff_between_old_new__list(old_pathlists, new_pathlists)
     print(f"old_pathlists: {old_pathlists}")
@@ -76,8 +102,8 @@ def send_handler(json_data, filerawdict):
         # 打通路径
         if eachpath[1] == 0:
             try:
-                print(f"正在尝试打通路径: {BEGIN_PATH}{get_file_dir__str(eachpath[0])}")
-                os.makedirs(BEGIN_PATH + get_file_dir__str(eachpath[0]))
+                print(f"正在尝试打通路径: {BEGIN_PATH}{get_file_dir__local_str(eachpath[0])}")
+                os.makedirs(BEGIN_PATH + get_file_dir__local_str(eachpath[0]))
                 print("打通路径成功！")
             except FileExistsError:
                 print("打通路径失败，路径已存在")

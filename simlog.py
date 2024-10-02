@@ -32,12 +32,3 @@ def print_func_to_log(func):
             printlog(f"================= {func.__name__} end =================")
             return result
     return wrapper
-
-@print_func_to_log
-def testf(a : int, b : str):
-    """ Test. """
-    print(f"testf: a = {a}, b = {b}")
-
-if __name__ == '__main__':
-    pass
-    testf(10, "hi")
