@@ -1,6 +1,5 @@
 import platform
 
-SEP_SYMBOL = '\\' if platform.system() == "Windows" else "/"
 
 def combine_multi_space__str(s) -> str:
     """Merge several consecutive spaces into one"""

@@ -36,15 +36,175 @@ import socket
 import platform
 from copy import deepcopy
 
-import simblogpy as blog
-import simblogpy.correspond
-import simblogpy.log
-import simblogpy.string
-from simblogpy.string import SEP_SYMBOL
-import simblogpy.filejson
-import simblogpy.correspond
-import simblogpy.terminal
+SEP_SYMBOL = '\\' if platform.system() == "Windows" else "/"
 
+HOST = "127.0.0.1"
+JSON_PORT = 9999
+SEND_PORT = 12555
+
+def lslayer__local_list(curlayer):
+    keylist = list()
+    index = 0
+    for key in curlayer:
+        if curlayer[key][1] == 0:
+            print(f"{index}. File: {key}")
+        elif curlayer[key][1] == 1:
+            print(f"{index}. Directory: {key}")
+        index += 1
+        keylist.append(key)
+    return keylist
+
+def combine_multi_space__local_str(s) -> str:
+    """Merge several consecutive spaces into one"""
+    news = s.replace('  ', ' ')
+    while news != s:
+        s = news
+        news = s.replace('  ', ' ')
+    return news
+
+def input_article__local_str():
+    """Open Vim. Write and then read."""
+    os.system(f"vim {CACHE_PATH}")
+    with open(CACHE_PATH, "rt") as f:
+        raw = f.read()
+    return raw
+
+def choose_path_cmd__local_None(curlayer, choose, keylist):
+    """Probably mkdir."""
+    choose = combine_multi_space__local_str(choose.strip())
+
+    routertmp = CommandRouter(choose.split(' '))
+    argdict = deepcopy(routertmp.argdict)
+
+    print(argdict)
+    if argdict["__ANONYMOUS"][0] == "mkdir":
+        if argdict["__ANONYMOUS"][1] in keylist:
+            print(f"Invalid input! The directory already exists.")
+        else:
+            curlayer[argdict["__ANONYMOUS"][1]] = [argdict["__ANONYMOUS"][2], 1, {}]
+
+
+# TODO 这是用于处理download from server请求的函数
+def choose_path_without_mkdir__local_str(json_dict):
+    """Choose a path, NO mkdir!"""
+    pathstr = ""
+    curlayer = json_dict
+    while True:
+        if isinstance(curlayer, dict):
+            pass
+        else:
+            print(f"Unexpected curlayer: {curlayer}")
+            print(f"{type(curlayer)}")
+        keylist = lslayer__local_list(curlayer)
+
+        try:
+            choose = input("> ")
+            choose = int(choose)
+        except ValueError:
+            print("Unexpected input!")
+            continue
+
+        if choose > len(keylist): raise IndexError("Too big index.")
+
+        if choose == -1:        # TODO
+            #print(json_dict)
+            break
+        else:
+            chosen_key = keylist[choose]
+            if curlayer[chosen_key][1] == 0:
+                pathstr += f"{SEP_SYMBOL}{chosen_key}"
+                break
+            elif curlayer[chosen_key][1] == 1:
+                curlayer = curlayer[chosen_key][2]
+        pathstr += f"{SEP_SYMBOL}{chosen_key}"
+    print(pathstr)
+    return pathstr
+
+
+def insert_file_to_path_may_mkdir__local_str(json_dict, serious_name, title_name):
+    """
+    Choose a path, but maybe mkdir.
+    Args:
+        json_dict: This function will write new keys and values to json_dict
+
+    Return:
+        str: 
+    """
+    pathstr = ""
+    curlayer = json_dict
+    while True:
+        if isinstance(curlayer, dict):
+            pass
+        else:
+            print(f"Unexpected curlayer: {curlayer}")
+            print(f"{type(curlayer)}")
+        keylist = lslayer__local_list(curlayer)
+
+        try:                            # 输入选择，并转为数字
+            choose = input("> ")
+            choose = int(choose)
+
+            if choose == -1:                # 就是这里
+                curlayer[serious_name] = [title_name, 0]
+                print(json_dict)
+                break
+            elif choose > len(keylist):     # 选择的进入的目录索引过大
+                raise IndexError("Too big index.")
+            else:                           # 选择的目录索引正常
+                chosen_key = keylist[choose]
+                if curlayer[chosen_key][1] == 0:        # 选择的是文件，让pathstr带上文件名之后直接返回
+                    pathstr += f"{SEP_SYMBOL}{chosen_key}"
+                    break
+                elif curlayer[chosen_key][1] == 1:      # 选择的是目录，继续迭代
+                    curlayer = curlayer[chosen_key][2]
+            pathstr += f"{SEP_SYMBOL}{chosen_key}"
+        except ValueError:              # 若无法成功转为数字，按照mkdir指令处理
+            choose_path_cmd__local_None(curlayer, choose, keylist)
+            continue
+    return pathstr
+
+def recv_all__local_bytes(sock, bufsiz=1024) -> bytes:
+    """Receive until no more data."""
+    data = b''
+    while True:
+        part = sock.recv(bufsiz)
+        data += part
+        if len(part) < bufsiz:
+            break
+    return data
+
+def get_json_from_server__local_dict() -> dict:
+    """
+    Connect to the specified server,
+    receive JSON data,
+    parse JSON into a dictionary.
+    """
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST, JSON_PORT))
+    raw = recv_all__local_bytes(s).decode("utf-8")
+    s.close()
+    return json.loads(raw)
+
+def send_to_server__local_None(msg: str):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((HOST, SEND_PORT))
+    sock.send(msg.encode("utf-8"))
+    sock.close()
+
+def add_files_to_server__local_None(new_json, file_raw_dict):
+    """
+    Send new data to server.
+    Args:
+        new_json: dict. JSON after adding new articles/directories.
+        file_raw_dict: dict. Key is path of article, and value is its raw.
+    
+    Message format:
+        new_json\r\nDATA_RAW_SPLIT\r\nfile_raw_dict
+
+    """
+    msgraw = f"S{json.dumps(new_json)}\r\nDATA_RAW_SPLIT\r\n{json.dumps(file_raw_dict)}"
+    send_to_server__local_None(msgraw)
 
 class CommandRouter:
     def __init__(self, argv):
@@ -115,17 +275,17 @@ class CommandRouter:
             python .\\client.py
                 匿名上传文章
         """
-        old_data = blog.correspond.get_json_from_server__dict()
+        old_data = get_json_from_server__local_dict()
         print(f"old_data: {type(old_data)}")
-        fileraw = blog.terminal.input_article__str()
+        fileraw = input_article__local_str()
         serious_name = input("serious_name: ")
         title_name = input("title_name: ")
 
-        filepath = blog.terminal.insert_file_to_path_may_mkdir__str(old_data, serious_name, title_name)
+        filepath = insert_file_to_path_may_mkdir__local_str(old_data, serious_name, title_name)
         print(f"filepath: {filepath}")
 
         new_data = old_data
-        blog.correspond.add_files_to_server__None(new_data, {f"{filepath}{SEP_SYMBOL}{serious_name}": fileraw})
+        add_files_to_server__local_None(new_data, {f"{filepath}{SEP_SYMBOL}{serious_name}": fileraw})
 
 
 
@@ -141,7 +301,7 @@ class CommandRouter:
         if '-s' not in self.argdict.keys():
             self.argdict['-s'] = input("请输入文章serious_name: ")
 
-        old_data = blog.correspond.get_json_from_server__dict()
+        old_data = get_json_from_server__local_dict()
         print(f"old_data: {type(old_data)}")
         fileraw = ""
         with open(self.argdict['-a'], "rt") as f:
@@ -149,11 +309,11 @@ class CommandRouter:
         serious_name = self.argdict['-s']
         title_name = self.argdict['-n']
 
-        filepath = blog.terminal.insert_file_to_path_may_mkdir__str(old_data, serious_name, title_name)
+        filepath = insert_file_to_path_may_mkdir__local_str(old_data, serious_name, title_name)
         print(f"filepath: {filepath}")
 
         new_data = old_data
-        blog.correspond.add_files_to_server__None(new_data, {f"{filepath}{SEP_SYMBOL}{serious_name}": fileraw})
+        add_files_to_server__local_None(new_data, {f"{filepath}{SEP_SYMBOL}{serious_name}": fileraw})
 
 
     def download_article__None(self):
@@ -164,23 +324,23 @@ class CommandRouter:
             报文格式：
                 f"G{filepath(with serious_name)}"
         """
-        json_data = blog.correspond.get_json_from_server__dict()
-        filepath = blog.terminal.choose_path_without_mkdir__str(json_data)
+        json_data = get_json_from_server__local_dict()
+        filepath = choose_path_without_mkdir__local_str(json_data)
 
 
-    """
-        python .\\client.py -u filename
-            将filename作为更新内容，更新某篇文章
-    """
     def update_with_file__None(self):
+        """
+            python .\\client.py -u filename
+                将filename作为更新内容，更新某篇文章
+        """
         pass
 
 
-    """
-        python .\\client.py -u p
-            先从远程获取先前的文章，再改，改了之后再更新到远程
-    """
     def pull_and_update__None(self):
+        """
+            python .\\client.py -u p
+                先从远程获取先前的文章，再改，改了之后再更新到远程
+        """
         pass
 
     def rename_file__None(self):
