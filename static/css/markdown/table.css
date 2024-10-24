@@ -1,0 +1,28 @@
+table.mdtag-table {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: var(--main-font-size);
+    border-collapse: collapse;
+    border: 1px solid black;
+    background-color: rgba(242, 242, 233, 0.5);
+}
+
+table th, table td {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border: 1px solid black;
+}
+
+table th {
+    background-color: #c6c6c6;
+}
+
+.mdtag-table-container {
+    width: 100%;
+    overflow: auto;
+}

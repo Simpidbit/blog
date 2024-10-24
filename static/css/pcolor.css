@@ -1,0 +1,41 @@
+red {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #ff0000;
+}
+
+green {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #3bba31;
+}
+
+blue {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #19b1e6;
+}
+
+yellow {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #e9e81d;
+}
+
+purple {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #b500ff;
+}
+
+pink {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #ff9598;
+}
+
+orange {
+    font-weight: 100;
+    font-size: var(--main-font-size);
+    color: #ff7b00;
+}

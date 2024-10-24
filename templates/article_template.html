@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="/static/css/font.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/button.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/md-content.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/pcolor.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/nav.css" />
+
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/title.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/plain.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/code.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/a.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/li.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/quote.css" />
+        <link type="text/css" rel="stylesheet" href="/static/css/markdown/table.css" />
+
+        <script src="/static/js/static.js"></script>
+        <script src="/static/js/external_mermaid/mermaid.min.js"></script>
+        <script src="/static/js/main.js"></script>
+        <script src="/static/js/event.js"></script>
+        <script src="/static/js/pathque.js"></script>
+        <script src="/static/js/foldtree.js"></script>
+        <script src="/static/js/mdcontent.js"></script>
+
+        <script src="/static/js/mdloader/markdown.js"></script>
+        <script src="/static/js/mdloader/loader.js"></script>
+        <script src="/static/js/mdloader/mdparser/a_url.js"></script>
+        <script src="/static/js/mdloader/mdparser/code.js"></script>
+        <script src="/static/js/mdloader/mdparser/escape.js"></script>
+        <script src="/static/js/mdloader/mdparser/image.js"></script>
+        <script src="/static/js/mdloader/mdparser/quote.js"></script>
+        <script src="/static/js/mdloader/mdparser/table.js"></script>
+        <script src="/static/js/mdloader/mdparser/title.js"></script>
+        <script src="/static/js/mdloader/mdparser/ul_li.js"></script>
+        <script src="/static/js/mdloader/mdparser/string.js"></script>
+
+        <script src="/static/js/mermaid.js"></script>
+        <script src="/static/js/navigator.js"></script>
+        <script src="/static/js/wait.js"></script>
+        <!--<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        -->
+        <!--
+        <script id="MathJax-script" src="/static/js/tex-mml-chtml.js"></script>
+        -->
+        <script>
+            // 配置MathJax
+            window.MathJax = {
+                tex: {
+                    inlineMath: [
+                        ['$', '$'],
+                        ['mxbegin', 'mxend']
+                    ],
+                    displayMath: [
+                        ["$$", "$$"],
+                        ['mxlineb', 'mxlinee']
+                    ]
+
+                },
+                loader: {
+                    load: ["input/tex", "output/chtml"]
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <button id="goto-main-content" onclick="async_try_until_ok__interface_wait(goto_main_index__callback_navigator, 0);">/</button>
+        <!--<button id="goto-last-content" onclick="goto_last_content__callback_navigator();">&lt;</button>-->
+        <div id="md-content">
+        </div>
+        <div id="main-area"></div>
+        <div class="toolbar">
+        </div>
+    </body>
+</html>

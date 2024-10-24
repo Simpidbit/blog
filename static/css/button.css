@@ -1,0 +1,65 @@
+:root {
+    --content-button-bd-color: #e2d6a9;
+    --content-button-folded-color: #d4af25 ;
+}
+
+#goto-main-content {
+    padding: 0;
+    opacity: 0.3;
+    font-size: 38px;
+    background-color: var(--main-color);
+    border: none;
+    border-radius: 20px;
+    position: fixed;
+    width: 4.8%;
+    height: 6%;
+
+    top: 0;
+    right: 0%;
+
+    z-index: 1;
+}
+
+#goto-main-content:hover {
+    opacity: 1;
+    background-color: var(--tiny-grey-color);
+}
+
+#goto-main-content:active {
+    opacity: 1;
+    background-color: var(--grey-color);
+    width: 4.4%;
+    height: 5.4%;
+
+    top: 0.3%;
+    right: 0.2%;
+
+    font-size: 30px;
+}
+
+#goto-last-content {
+    opacity: 0.3;
+    font-size: 38px;
+    background-color: var(--main-color);
+    border: none;
+    border-radius: 20px;
+    position: fixed;
+    width: 4.8%;
+    height: 6%;
+    top: 94%;
+    left: 0%;
+    z-index: 1;
+}
+#goto-last-content:hover {
+    opacity: 1;
+    background-color: var(--tiny-grey-color);
+}
+#goto-last-content:active {
+    opacity: 1;
+    background-color: var(--grey-color);
+    width: 4.4%;
+    height: 5.4%;
+    top: 94.2%;
+    left: 0.2%;
+    font-size: 30px;
+}

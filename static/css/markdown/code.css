@@ -1,0 +1,28 @@
+div.mdtag-code-container {
+    color: #02b206;
+    border-radius: 20px;
+    background-color: #000000;
+    padding: 20px;
+    font-family: "enfont";
+    font-size: 17px;
+    overflow-x: auto;
+}
+
+.mdtag-inline-code {
+    display: inline;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: 17px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-radius: 5px;
+    background-color: #e4e4d1;
+    word-break: keep-all;
+    white-space: pre-wrap;
+}
+
+pre.mdtag-mermaid {
+    text-align: center;
+}
