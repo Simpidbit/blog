@@ -6,7 +6,7 @@ import os
 import platform
 
 
-GET_PORT = 9999
+GET_PORT = 10001
 SEND_PORT = 12555
 
 SEP_SYMBOL = '\\' if platform.system() == "Windows" else "/"
@@ -159,49 +159,67 @@ def update_handler(pathlist, fileraw):
         f.write(fileraw)
 
 
+
+def remove_handler(json_data, filepath_list):
+    # 打开JSON文件，读取其中的旧数据
+    old_data = None
+    with open(JSON_PATH, "rt") as f:
+        old_data = f.read()
+        # 将读取的JSON字符串解析为字典
+        old_data = json.loads(old_data)
+
+    # 将新数据写入JSON文件，更新目录结构
+    with open(JSON_PATH, "wt") as f:
+        f.write(json.dumps(json_data))
+
+    # 删除文件/目录
+    for filepath in filepath_list:
+        os.system(f"rm -r {BEGIN_PATH}{filepath}")
+
+
+
 # 获取目录结构的 JSON 数据的服务器端处理函数
 def get_json_server():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("0.0.0.0", GET_PORT))
+    sock.listen(32)
     while True:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(("0.0.0.0", GET_PORT))
-        sock.listen(32)
         conn, addr = sock.accept()
         with open(JSON_PATH, "rt") as f:
             data = f.read()
         conn.send(data.encode("utf-8"))
         conn.close()
-        sock.close()
+    sock.close()
 
 
 # 发送文件的服务器端处理函数，主要处理客户端发送来的文件和目录信息
 def send_file_server():
     # 无限循环，持续监听客户端的连接请求
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("0.0.0.0", SEND_PORT))
+    sock.listen(32)
     while True:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(("0.0.0.0", SEND_PORT))
-        sock.listen(32)
         conn, addr = sock.accept()
         raw = recv_all__local_bytes(conn).decode("utf-8")
         conn.close()
-        sock.close()
         
-        # 将客户端发送的数据分割成消息头和文件原始数据两部分
+        # 将客户端发送的数据分割成消息头和数据两部分
         raw_piece = raw.split('\r\nDATA_RAW_SPLIT\r\n')
-        # 从消息头中解析出 JSON 格式的目录结构数据
         print(raw_piece)
-        data = json.loads(raw_piece[0][1:])
 
-        # 文件原始数据
-        file_raw_data = raw_piece[1]
-        
+        data = raw_piece[1]
+
         # 根据消息头的第一个字符判断客户端的操作类型，若是 "S" 则为发送新文件
         match raw[0]:
             case 'S':
-                json_data = data
+                # 从消息头中解析出 JSON 格式的目录结构数据
+                json_data = json.loads(raw_piece[0][1:])
+
                 print(f"Send: {json_data}")
-                file_raw_json = json.loads(file_raw_data)
+                file_raw_json = json.loads(data)
                 print(f"file_raw_json: {file_raw_json}")
                 send_handler(json_data, file_raw_json)
+
             case 'U':
                 # 若是 "U" 则为更新已存在文件的内容  
                 pathlist = data
@@ -209,12 +227,18 @@ def send_file_server():
                 print(f"fileraw: {file_raw}")
                 # 调用处理更新操作的函数，更新目录中已存在文件的内容
                 update_handler(pathlist, file_raw_data)
+
             case 'R':
                 pass
+
             case 'D':
-                pass
+                # 删除文件或目录
+                json_data = json.loads(raw_piece[0][1:])
+                remove_handler(json_data, data.split('$$$'))
+
             case _:
                 pass
+    sock.close()
 
 if __name__ == '__main__':
     get_th = threading.Thread(target=get_json_server)
