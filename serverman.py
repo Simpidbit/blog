@@ -229,6 +229,9 @@ def send_file_server():
                 # 调用处理更新操作的函数，更新目录中已存在文件的内容
                 update_handler(pathlist, file_raw_data)
 
+            case 'G':
+                # 下载文件
+
             case 'R':
                 pass
 

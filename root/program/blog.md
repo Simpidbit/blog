@@ -191,7 +191,7 @@
 
 **接口**：
 
-- > ` render_foldtree_to_ele_from_globaldata__interface_foldtree(
+- > `render_foldtree_to_ele_from_globaldata__interface_foldtree(
   >  list_data,    ele,       key,
   >  btn_attributes,    a_attributes,   div_attributes, 
   >  whether_clear)`

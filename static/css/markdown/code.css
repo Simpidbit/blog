@@ -8,7 +8,13 @@ div.mdtag-code-container {
     overflow-x: auto;
 }
 
+code {
+    white-space: pre;
+    font-family: "enfont";
+}
+
 .mdtag-inline-code {
+    font-family: "enfont";
     display: inline;
     margin-left: 2px;
     margin-right: 2px;

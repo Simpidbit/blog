@@ -17,6 +17,10 @@ function __markdown_code(raw) {
     // 行内代码`aowief`
     // 应放在代码块渲染之后
     raw = parse_partof_md_to_html__local_markdown(raw, /`[^]*?`/g, s => {
+
+        // 这一行是为了修复多行quote被内联code包裹时，符号 > 未能消去的bug
+        s = s.replaceAll(/\n\ *> /g, "\n");
+
         s = __markdown_escape_raw(s);
         return "<div class=\"mdtag-inline-code\">" + s.slice(1, s.length - 1) + "</div>";
     });

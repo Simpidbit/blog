@@ -24,7 +24,8 @@ function parse_list_data_from_JSON__local_navigator(json, level, patharr) {
                 {
                     "class": "navigator-btn",
                     "onclick": "this.parentElement.firstElementChild.nextElementSibling.click();",
-                    "btn-text": "📝"
+                    "btn-text": "📝",
+                    "style": "user-select: none;"
                 },
                 {
                     "class": "navigator-a",
@@ -44,11 +45,13 @@ function parse_list_data_from_JSON__local_navigator(json, level, patharr) {
                 ], window.navigator_temp_container, "navigator",
                 {
                     "class": "navigator-btn",
-                    "btn-text": "📂"
+                    "btn-text": "📂",
+                    "style": "user-select: none;"
                 },
                 {
                     "class": "navigator-a",
-                    "onclick": "this.parentElement.firstElementChild.click();"
+                    "onclick": "this.parentElement.firstElementChild.click();",
+                    "style": "user-select: none;"
                 },
                 {
                     "class": "navigator-div"

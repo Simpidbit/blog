@@ -11,10 +11,6 @@
     width: 100%;
 }
 
-code {
-    white-space: pre;
-}
-
 
 body {
     background-color: var(--main-color);

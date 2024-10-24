@@ -1,4 +1,6 @@
 function __markdown_quote(raw) {
+    console.log("quote接手");
+    console.log(raw);
     let regarr = [
         /(?<=(\s+|^))(\ *>){1}\ +/,
         /(?<=(\s+|^))(\ *>){2}\ +/,

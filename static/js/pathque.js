@@ -30,6 +30,5 @@ function get_pathname_from_path_queue__interface_pathque (pathque) {
     for (let i = 0; i < pathque.length; i++) {
         pathname += `/${pathque[i]}`;
     }
-    console.log(pathque, pathname);
     return pathname;
 }
