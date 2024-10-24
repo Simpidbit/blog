@@ -49,9 +49,9 @@ def lslayer__local_list(curlayer):
     index = 0
     for key in curlayer:
         if curlayer[key][1] == 0:
-            print(f"{index}. File: {key}")
+            print(f"{index}. File: {key} {curlayer[key][0]}")
         elif curlayer[key][1] == 1:
-            print(f"{index}. Directory: {key}")
+            print(f"{index}. Directory: {key} {curlayer[key][0]}")
         index += 1
         keylist.append(key)
     return keylist
@@ -86,9 +86,6 @@ def choose_path_cmd__local_None(curlayer, choose, keylist):
             curlayer[argdict["__ANONYMOUS"][1]] = [argdict["__ANONYMOUS"][2], 1, {}]
 
 
-"""
-
-"""
 def insert_file_to_path_may_mkdir__local_str(json_dict, serious_name, title_name):
     """
     此函数接收参数:
@@ -133,6 +130,7 @@ def insert_file_to_path_may_mkdir__local_str(json_dict, serious_name, title_name
 
 def remove_file_or_path_without_mkdir__local_list(json_dict):
     rm_list = []
+    lastpathstr = ""
     pathstr = ""
 
     lastlayer = dict()
@@ -148,17 +146,20 @@ def remove_file_or_path_without_mkdir__local_list(json_dict):
         if choose == -1:                # 就是这个目录
             rm_list.append(deepcopy(pathstr))
             del lastlayer[last_choice]
+            lastpathstr = pathstr
             pathstr = ""
             curlayer = json_dict
         elif choose == -2:              # 够了，滚
             break
         else:                           # 选择索引
             chosen_key = keylist[choose]
+            lastpathstr = pathstr
             pathstr += f"{SEP_SYMBOL}{chosen_key}"
 
             if curlayer[chosen_key][1] == 0:        # 选择的是文件，让pathstr带上文件名
                 rm_list.append(deepcopy(pathstr))
                 del curlayer[chosen_key]
+                pathstr = lastpathstr
             elif curlayer[chosen_key][1] == 1:      # 选择的是目录，继续迭代
                 lastlayer = curlayer
                 last_choice = chosen_key
@@ -358,7 +359,7 @@ class CommandRouter:
         rm_list = remove_file_or_path_without_mkdir__local_list(old_data)
 
         data = "$$$".join(rm_list)
-        send_to_server__local_None(f"D{old_data}\r\nDATA_RAW_SPLIT\r\n{data}")
+        send_to_server__local_None(f"D{json.dumps(old_data)}\r\nDATA_RAW_SPLIT\r\n{data}")
 
     def reorder_by_mode(self):
         pass

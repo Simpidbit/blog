@@ -73,8 +73,8 @@ function render_navigator_from_JSON__interface_navigator() {
             let directory_json = JSON.parse(raw);
             window.navigator_json = directory_json;
             render_foldtree_to_ele_from_globaldata__interface_foldtree(
-                [],         null,                               "navigator",
-                null,       null,                               null,
+                [],         null,       "navigator",
+                null,       null,       null,
                 true);
             parse_list_data_from_JSON__local_navigator(directory_json, 1, []);
 

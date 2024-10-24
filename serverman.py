@@ -205,7 +205,8 @@ def send_file_server():
         
         # 将客户端发送的数据分割成消息头和数据两部分
         raw_piece = raw.split('\r\nDATA_RAW_SPLIT\r\n')
-        print(raw_piece)
+        print("raw_piece[0]:", raw_piece[0])
+        print("raw_piece[1]:", raw_piece[1])
 
         data = raw_piece[1]
 
