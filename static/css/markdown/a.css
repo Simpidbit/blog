@@ -1,7 +1,12 @@
-a.mdtag-a {
+#main-area a:not(.navigator-a) {
     color: #419612;
+    text-decoration: none;
 }
 
-a.mdtag-a:visited {
-    color: #5c6b54;
+#main-area a:hover {
+    text-decoration: underline;
+}
+
+#main-area a:visited {
+    color: #015400;
 }

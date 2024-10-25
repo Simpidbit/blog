@@ -60,10 +60,6 @@ function __markdown_refer_url(raw) {
 }
 
 
-
-
-
-
 function __markdown_naked_url(raw) {
     pieces = [""];
     for (let i = 0; i < raw.length; i++) {

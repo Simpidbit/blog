@@ -29,16 +29,14 @@ h2.mdtag-h {
     margin-bottom: 25px;
     padding-top: 10px;
     padding-bottom: 10px;
-    font-size: 35px;
+    font-size: 39px;
     text-align: center;
-    border-left: 3px solid var(--h2-border-color);
-    border-right: 3px solid var(--h2-border-color);
 }
 
 h3.mdtag-h {
     margin-top: 25px;
     margin-bottom: 25px;
-    text-align: center;
+    text-align: left;
     font-size: 30px;
     padding-bottom: 10px;
     border-bottom: 1px dashed var(--h2-border-color);

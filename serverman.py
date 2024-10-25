@@ -231,6 +231,7 @@ def send_file_server():
 
             case 'G':
                 # 下载文件
+                pass
 
             case 'R':
                 pass

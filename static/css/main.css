@@ -28,8 +28,8 @@ body {
     left: 50%;
     transform: translate(-36.527%, 0);
     overflow: auto;
-    word-wrap: break-word;
-    word-break: break-all;
+    word-wrap: normal;
+    word-break: normal;
     scroll-behavior: smooth;
     padding-left: 5%;
     padding-right: 7.5%;
