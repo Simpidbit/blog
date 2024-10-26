@@ -1,7 +1,19 @@
-// 依据list_data中的数据
-// 构建md-content组件并写入ele
-// 折叠/展开数据放在window.foldtree_isfold_data[key][1]里
-// window.foldtree_isfold_data[key][0] 装着的是ele
+/*
+	此函数负责构建foldtree.
+	参数：
+		list_data: 以列表的形式顺序列出所有label, 格式：[ [逻辑层级, 内容], [逻辑层级, 内容], ... ]
+		ele: 这棵树写到哪个元素上
+		key: 树的名字，关系到树的临时数据存放
+		btn_attributes: 折叠按钮的属性，键值对的value为函数时，键对应的值为函数的返回值，函数传入参数(list_data, 此时list_data的索引位置)，下同
+		a_attributes: 折叠按钮后面链接（内容）的属性
+		div_attributes: 一对超链接和按钮组成的label的属性
+		whether_clear: 布尔值，是否清空 window.foldtree_isfold_data[key] 的数据
+        tabpx: 默认值30, 控制foldtree前面一个缩进的长度, 单位是px
+	此函数将会:
+		将这棵树的折叠数据写入 window.foldtree_isfold_data[key][1]
+		将构建出来的foldtree写入ele元素中
+		将ele写入 window.foldtree_isfold_data[key][0]
+*/
 window.foldtree_isfold_data = {};
 function render_foldtree_to_ele_from_globaldata__interface_foldtree (
     list_data,          ele,            key,
@@ -74,9 +86,13 @@ function render_foldtree_to_ele_from_globaldata__interface_foldtree (
 }
 
 
-// 目录中的label前面的按钮按下去时的回调函数
-// 通过改变label和label父div的data-status
-// 来切换样式，即改变样式
+/*
+    foldtree中，每个条目前面的小按钮被点击时调用的回调函数
+    参数:
+        btn: 调用这个函数的按钮
+    此函数将会:
+        切换被点击的按钮的相关样式
+*/
 function change_btn_status__callback_mdcontent(btn) {
     if (btn.getAttribute("data-status") == "unfolded") {
         btn.setAttribute("data-status", "folded");
@@ -87,9 +103,17 @@ function change_btn_status__callback_mdcontent(btn) {
     }
 }
 
-// window.foldtree_isfold_data[key]: [ [status, ele...], [...],... ]
 
-// 展开/折叠 foldtree_label
+// window.foldtree_isfold_data[key]: [ [status, ele...], [...],... ]
+/*
+    foldtree中，每个条目(目录型, 即有子条目的)被点击时的回调函数
+    参数:
+        foldtree_label: 谁调用的这个回调函数
+        key: 保存foldtree数据的树的名字, 意义同render_foldtree_to_ele_from_globaldata__interface_foldtree()里的key
+    此函数将会:
+        切换被点击条目的展开/折叠状态
+        本来折叠的切换成展开，本来展开的切换成折叠
+*/
 function fold_foldtree_label__callback_mdcontent(foldtree_label, key) {
     let this_level = Number(foldtree_label.getAttribute("data-level"));
     let this_id = Number(foldtree_label.getAttribute("data-id"));

@@ -6,7 +6,7 @@ div.md-plain-text {
 }
 
 b {
-    font-family: "enfont-bold", "cnfont-bold";
+    font-family: "enfont-bold";
     font-weight: 900;
     font-size: var(--main-font-size);
 }

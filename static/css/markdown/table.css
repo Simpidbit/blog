@@ -8,6 +8,7 @@ table.mdtag-table {
     border-collapse: collapse;
     border: 1px solid black;
     background-color: rgba(242, 242, 233, 0.5);
+    word-break: break-all;
 }
 
 table th, table td {

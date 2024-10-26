@@ -30,47 +30,119 @@
 
 ### 各模块及功能说明
 
+
+
+#### event.js
+
+大致代码结构：
+
+```js
+function register_event_listener__interface_event() {
+    ...
+    document.addEventListener('keydown', function(event) {
+        switch(event.key) { ... }
+	});
+}
+```
+
+
+
+#### external_mermaid
+
+外部引用mermaid，负责渲染mermaid图
+
+
+
+#### external_MathJax
+
+外部引用MathJax，负责渲染laTeX公式
+
+
+
+#### foldtree.js
+
+是一个抽象的节点树
+
+大致代码结构如下
+
+```js
+window.foldtree_isfold_data = {};
+
+/*
+	此函数负责构建foldtree.
+	参数：
+		list_data: 以列表的形式顺序列出所有label, 格式：[ [逻辑层级, 内容], [逻辑层级, 内容], ... ]
+		ele: 这棵树写到哪个元素上
+		key: 树的名字，关系到树的临时数据存放
+		btn_attributes: 折叠按钮的属性，键值对的value为函数时，键对应的值为函数的返回值，函数传入参数(list_data, 此时list_data的索引位置)，下同
+		a_attributes: 折叠按钮后面链接（内容）的属性
+		div_attributes: 一对超链接和按钮组成的label的属性
+		whether_clear: 布尔值，是否清空 window.foldtree_isfold_data[key] 的数据
+		tabpx: 默认值30, 控制foldtree前面一个缩进的长度, 单位是px
+	此函数将会:
+		将这棵树的折叠数据写入 window.foldtree_isfold_data[key][1]
+		将构建出来的foldtree写入ele元素中
+		将ele写入 window.foldtree_isfold_data[key][0]
+*/
+function render_foldtree_to_ele_from_globaldata__interface_foldtree(
+    list_data,          ele,            key,
+    btn_attributes,     a_attributes,   div_attributes,
+    whether_clear,      tabpx = 30
+) {...}
+
+
+/*
+    foldtree中，每个条目前面的小按钮被点击时调用的回调函数
+    参数:
+        btn: 调用这个函数的按钮
+    此函数将会:
+        切换被点击的按钮的相关样式
+*/
+function change_btn_status__callback_mdcontent(btn) {...}
+
+
+/*
+    foldtree中，每个条目(目录型, 即有子条目的)被点击时的回调函数
+    参数:
+        foldtree_label: 谁调用的这个回调函数
+        key: 保存foldtree数据的树的名字, 意义同render_foldtree_to_ele_from_globaldata__interface_foldtree()里的key
+    此函数将会:
+        切换被点击条目的展开/折叠状态
+        本来折叠的切换成展开，本来展开的切换成折叠
+*/
+function fold_foldtree_label__callback_mdcontent(...) {...}
+```
+
+
+
+
+
+
+
 #### main.js
+
+大致代码结构：
+
+```js
+window.onload = function() {
+    ...
+}
+```
 
 主要定义`window.onload`回调函数，刚刚打开时处理页面，同时异步引入较大的MathJax模块
 
 
 
-#### mdloader
-
-`markdown.js`及`markdown`目录下的代码负责markdown语法的解析，`loader.js`负责将解析为html的md文件写入main-area并构建左侧的目录
-
-**接口**：
-
-- > `catch_plain_text_from_element__local_loader(element)`
-
-  输入：`element`参数，即捕捉哪个元素下的子纯文本节点
-
-  输出：将捕捉到的纯文本套上标签后写回element
-
-- > `update_markdown_to_main_area__interface_loader(path, firstTime = false)`
-
-  输入：
-
-  ​	`path`参数：请求的文章路径（不含root）;
-
-  ​	`firstTime`参数：是否是第一次打开网页;
-
-  ​	`CLASS("mdtag-mermaid")`：将这些节点渲染为mermaid图;
-
-  输出：
-
-  ​	要写入到main-area的文章路径写入地址栏;
-
-  ​	请求的文章写入`ID("main-area")`；
-
-  ​	`CLASS("mdtag-mermaid")`渲染为mermaid；
-
-  ​	
-
-
-
 #### mdcontent.js
+
+大致代码结构：
+
+```js
+function render_mdcontent_from_globaldata__interface_mdcontent() {...}
+function goto_title_of_mdcontent__callback_mdcontent() {...}
+```
+
+
 
 负责构建页面左侧的目录
 
@@ -137,13 +209,49 @@
 
 
 
+#### mdloader
+
+`markdown.js`及`markdown`目录下的代码负责markdown语法的解析，`loader.js`负责将解析为html的md文件写入main-area并构建左侧的目录
+
+**接口**：
+
+- `catch_plain_text_from_element__local_loader(element)`
+
+  输入：`element`参数，即捕捉哪个元素下的子纯文本节点
+
+  输出：将捕捉到的纯文本套上标签后写回element
+
+- `update_markdown_to_main_area__interface_loader(path, firstTime = false)`
+
+  输入：
+
+  ​	`path`参数：请求的文章路径（不含root）;
+
+  ​	`firstTime`参数：是否是第一次打开网页;
+
+  ​	`CLASS("mdtag-mermaid")`：将这些节点渲染为mermaid图;
+
+  输出：
+
+  ​	要写入到main-area的文章路径写入地址栏;
+
+  ​	请求的文章写入`ID("main-area")`；
+
+  ​	`CLASS("mdtag-mermaid")`渲染为mermaid；
+
+  ​	
+
+
+
+
+
 #### navigator
 
 负责构建在main-area显示的主目录
 
 **接口：**
 
-- > `render_navigator_from_JSON__interface_navigator()`
+- `render_navigator_from_JSON__interface_navigator()`
 
   输入：
 
@@ -155,7 +263,7 @@
 
 **回调：**
 
-- > `goto_main_index__callback_navigator()`
+- `goto_main_index__callback_navigator()`
 
   输入：
 
@@ -167,7 +275,7 @@
 
   ​	将构造好的节点写入`ID("main-area")`，同时将地址栏路径改为`/root`
 
-- > `goto_last_content__callback_navigator()`
+- `goto_last_content__callback_navigator()`
 
   输入：
 
@@ -182,43 +290,6 @@
   ​	自动让navigator跳转到上级目录的位置
 
   ​	将`/root`写入地址栏路径
-
-  
-
-#### foldtree.js
-
-是一个抽象的节点树
-
-**接口**：
-
-- > `render_foldtree_to_ele_from_globaldata__interface_foldtree(
-  >  list_data,    ele,       key,
-  >  btn_attributes,    a_attributes,   div_attributes, 
-  >  whether_clear)`
-
-​	输入：
-
-​		`list_data`：以列表的形式顺序列出所有label，格式：[ [逻辑层级, 内容], [逻辑层级, 内容], ... ]
-
-​		`ele`：这棵树写到哪个元素上
-
-​		`key`：树的名字，关系到树的临时数据存放
-
-​		`btn_attributes`：折叠按钮的属性，键值对的value为函数时，键对应的值为函数的返回值，函数传入参数(list_data, 此时list_data的索引位置)，下同
-
-​		`a_attributes`：折叠按钮后面链接（内容）的属性
-
-​		`div_attributes`：一对超链接和按钮组成的label的属性
-
-​		`whether_clear`：布尔值，是否清空`window.foldtree_isfold_data[key]`的数据
-
-  	输出：
-
-​		节点树写入`ele`元素
-
-​		将这棵树的折叠数据写入`window.foldtree_isfold_data[key]`
-
-  ​	
 
   
 
@@ -242,7 +313,7 @@
 
 **接口**：
 
-- > `async_try_until_ok__interface_wait(func, ms, args = null)` 
+- `async_try_until_ok__interface_wait(func, ms, args = null)` 
 
   输入：
 
@@ -257,16 +328,6 @@
   ​	`func`执行成功返回的返回值
 
 
-
-#### external_mermaid
-
-外部引用mermaid，负责渲染mermaid图
-
-
-
-#### external_MathJax
-
-外部引用MathJax，负责渲染laTeX公式
 
 
 
@@ -317,5 +378,4 @@
 **更改此变量的函数**：`render_navigator_from_JSON__interface_navigator`
 
 **仅读取此变量的函数（不含更改）**：`goto_main_index__callback_navigator`、`goto_last_content__callback_navigator`
-
 
